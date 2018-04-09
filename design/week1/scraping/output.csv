@@ -1,0 +1,52 @@
+sep=,
+Title,Rating,Genre,Actors,Runtime
+Planet Earth,9.6,Documentary,"David Attenborough, Sigourney Weaver, Huw Cordey",44
+The Wire,9.5,"Crime, Drama, Thriller","Dominic West, John Doman, Deirdre Lovejoy",60
+Breaking Bad,9.4,"Crime, Drama, Thriller","Bryan Cranston, Anna Gunn, Aaron Paul",45
+Game of Thrones,9.4,"Adventure, Drama, Fantasy","Lena Headey, Peter Dinklage, Maisie Williams",60
+Undercover,9.3,"Action, Crime, Drama","Marian Valev, Vladimir Penev, Zahary Baharov",
+Arrested Development,9.3,"Comedy, Drama","Jason Bateman, Michael Cera, Portia de Rossi",
+Firefly,9.2,"Adventure, Drama, Sci-Fi","Nathan Fillion, Gina Torres, Alan Tudyk",
+The Sopranos,9.2,"Crime, Drama","James Gandolfini, Lorraine Bracco, Edie Falco",58
+Sherlock,9.2,"Crime, Drama, Mystery","Benedict Cumberbatch, Martin Freeman, Una Stubbs",90
+Leyla ile Mecnun,9.1,"Adventure, Comedy, Drama, Fantasy, Mystery, Romance","Ali Atay, Serkan Keskin, Cengiz Bozkurt",80
+Twilight Zone,9.1,"Fantasy, Horror, Mystery, Sci-Fi, Thriller","Rod Serling, Robert McCord, Jay Overholts",
+Monty Python&#x27;s Flying Circus,9.1,"Comedy, Music","Graham Chapman, John Cleese, Terry Gilliam",
+Dexter,9.1,"Crime, Drama, Mystery, Thriller","Michael C. Hall, Jennifer Carpenter, Lauren Vlez",60
+Avatar: The Last Airbender,9.1,"Animation, Action, Adventure, Family, Fantasy","Zach Tyler, Mae Whitman, Jack De Sena",30
+Freaks and Geeks,9.0,"Comedy, Drama","Linda Cardellini, John Francis Daley, James Franco",
+QI,9.0,"Comedy, Game-Show","Stephen Fry, Alan Davies, Bill Bailey",
+Cowboy Bebop,9.0,"Animation, Action, Adventure, Drama, Sci-Fi, Thriller","Kunihiro Mori, Ikuro Sato, Kichi Yamadera, Unsh Ishizuka, Megumi Hayashibara",
+Twin Peaks,9.0,"Crime, Drama, Mystery, Thriller","Kyle MacLachlan, Michael Ontkean, Mdchen Amick",
+Fullmetal Alchemist Brotherhood,9.0,"Animation, Action, Adventure, Drama, Sci-Fi","Iemasa Kayumi, Vic Mignogna, Romi Pak",
+Death Note,9.0,"Animation, Crime, Drama, Fantasy, Mystery, Thriller","Brian Drummond, Andrew Francis, Lee Tockar",
+Batman,9.0,"Animation, Action, Crime, Drama, Fantasy, Mystery, Sci-Fi, Thriller","Kevin Conroy, Loren Lester, Efrem Zimbalist Jr.",
+Seinfeld,9.0,Comedy,"Jerry Seinfeld, Julia Louis-Dreyfus, Michael Richards",
+Rome,9.0,"Action, Drama, History, Romance, War","Kevin McKidd, Ray Stevenson, Polly Walker",
+Fawlty Towers,9.0,Comedy,"John Cleese, Prunella Scales, Andrew Sachs",
+Oz,9.0,"Crime, Drama, Thriller","Gregory Dark, Ernie Hudson, J.K. Simmons, Lee Tergesen",
+Blackadder Goes Forth,8.9,"Comedy, History, War","Rowan Atkinson, Tony Robinson, Stephen Fry",
+The Legend of Korra,8.9,"Animation, Action, Adventure, Drama, Fantasy","Janet Varney, Dee Bradley Baker, David Faustino",24
+South Park,8.9,"Animation, Comedy","Trey Parker, Matt Stone, Isaac Hayes",30
+Deadwood,8.9,"Crime, Drama, History, Western","Timothy Olyphant, Ian McShane, Molly Parker",60
+Downton Abbey,8.9,Drama,"Hugh Bonneville, Phyllis Logan, Elizabeth McGovern",
+It&#x27;s Always Sunny in Philadelphia,8.9,Comedy,"Charlie Day, Glenn Howerton, Rob McElhenney",
+Black-Adder II,8.9,"Comedy, History","Rowan Atkinson, Tony Robinson, Tim McInnerny",
+Only Fools and Horses....,8.9,"Comedy, Crime","David Jason, Nicholas Lyndhurst, Roger Lloyd-Pack",
+Friends,8.9,"Comedy, Romance","Jennifer Aniston, Courteney Cox, Lisa Kudrow",22
+Suits,8.9,"Comedy, Drama","Gabriel Macht, Patrick J. Adams, Meghan Markle",45
+The Adventures of Sherlock Holmes,8.9,"Crime, Drama, Mystery","Jeremy Brett, David Burke, Rosalie Williams",
+Six Feet Under,8.9,Drama,"Peter Krause, Michael C. Hall, Frances Conroy",
+Top Gear,8.9,"Comedy, Talk-Show","Richard Hammond, Jeremy Clarkson, James May",60
+Archer,8.9,"Animation, Action, Comedy","H. Jon Benjamin, Judy Greer, Amber Nash",30
+Black Adder the Third,8.8,"Comedy, History","Rowan Atkinson, Tony Robinson, Hugh Laurie",
+The Office,8.8,"Comedy, Romance","Rainn Wilson, John Krasinski, Jenna Fischer",22
+Mystery Science Theater 3000,8.8,"Comedy, Sci-Fi","Joel Hodgson, Michael J. Nelson, Trace Beaulieu",
+Berserk,8.8,"Animation, Action, Adventure, Fantasy, Horror","Naohito Takahashi, Nobutoshi Kanna, Marc Diraison, Toshiyuki Morikawa",
+Spaced,8.8,Comedy,"Jessica Hynes, Simon Pegg, Julia Deakin",
+The Venture Bros.,8.8,"Animation, Action, Adventure, Comedy, Sci-Fi","Christopher McCulloch, James Urbaniak, Michael Sinterniklaas",22
+Battlestar Galactica,8.8,"Action, Adventure, Drama, Sci-Fi","Edward James Olmos, Mary McDonnell, Jamie Bamber",
+Fullmetal Alchemist,8.8,"Animation, Comedy, Drama, Fantasy, Horror, Mystery, Sci-Fi","Aaron Dismuke, Vic Mignogna, Romi Pak",30
+Futurama,8.8,"Animation, Comedy, Sci-Fi","Billy West, John DiMaggio, Katey Sagal",
+The X-Files,8.8,"Drama, Mystery, Sci-Fi, Thriller","David Duchovny, Gillian Anderson, Mitch Pileggi",45
+The Simpsons,8.8,"Animation, Comedy, Family","Rob Oliver, Dan Castellaneta, Nancy Cartwright, Julie Kavner",
