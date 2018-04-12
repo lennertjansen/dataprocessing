@@ -41,51 +41,41 @@ def extract_tvseries(dom):
     # use for loop to iterate through series_info and extract relevant info
     for item in series_info:
         series = []
-
         # title
         title = item.h3.a.text
-        series.append(title)
-        #print(title)
+        #series.append(title)
 
         # rating
         rating = item.div.div.strong.text
-        #print(rating, flush = True)
-        series.append(rating)
+        #series.append(rating)
 
         # genres
         genres = item.p.find("span", class_="genre").text.strip()
-        #print(genres)
-        series.append(genres)
+        #series.append(genres)
 
         # actors
-        series_actors = item.find_all(class_="", href = re.compile("name"))
+        actors = item.find_all(class_="", href = re.compile("name"))
         temp_actors = []
 
-        for actor in series_actors:
+        for actor in actors:
 
             temp_actors.append(actor.text)
 
-        series_actors = ", ".join(temp_actors)
-        series.append(series_actors)
-
-        #print(item.find(class_="", href = re.compile("name")).text)
+        actors = ", ".join(temp_actors)
+        #series.append(actors)
 
         # runtime
         runtime = item.p.find("span", class_ = "runtime").text.strip(' min')
-        #print(runtime)
-        series.append(runtime)
+        #series.append(runtime)
 
-        #print(series)
+        series.extend([title, rating, genres, actors, runtime])
         series_list.append(series)
-
-    print(series_list)
-
-
 
     # ADD YOUR CODE HERE TO EXTRACT THE ABOVE INFORMATION ABOUT THE
     # HIGHEST RATED TV-SERIES
     # NOTE: FOR THIS EXERCISE YOU ARE ALLOWED (BUT NOT REQUIRED) TO IGNORE
     # UNICODE CHARACTERS AND SIMPLY LEAVE THEM OUT OF THE OUTPUT.
+    print(series_list)
 
     return series_list   # REPLACE THIS LINE AS WELL AS APPROPRIATE
 
