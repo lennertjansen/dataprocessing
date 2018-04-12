@@ -11,10 +11,11 @@ from requests.exceptions import RequestException
 from contextlib import closing
 from bs4 import BeautifulSoup
 
+import re
+
 TARGET_URL = "http://www.imdb.com/search/title?num_votes=5000,&sort=user_rating,desc&start=1&title_type=tv_series"
 BACKUP_HTML = 'tvseries.html'
 OUTPUT_CSV = 'tvseries.csv'
-
 
 def extract_tvseries(dom):
     """
@@ -27,12 +28,66 @@ def extract_tvseries(dom):
     - Runtime (only a number!)
     """
 
+    # create variable containing all list elements to be extracted
+    series_info = dom.find_all("div", class_="lister-item-content")
+
+    # determine length of list of tv series
+    list_length = len(series_info)
+
+    # create empty list to be filled with relevant information for csv file
+    series_list = []
+
+    #print(series_info[0].h3.a.text)
+    # use for loop to iterate through series_info and extract relevant info
+    for item in series_info:
+        series = []
+
+        # title
+        title = item.h3.a.text
+        series.append(title)
+        #print(title)
+
+        # rating
+        rating = item.div.div.strong.text
+        #print(rating, flush = True)
+        series.append(rating)
+
+        # genres
+        genres = item.p.find("span", class_="genre").text.strip()
+        #print(genres)
+        series.append(genres)
+
+        # actors
+        series_actors = item.find_all(class_="", href = re.compile("name"))
+        temp_actors = []
+
+        for actor in series_actors:
+
+            temp_actors.append(actor.text)
+
+        series_actors = ", ".join(temp_actors)
+        series.append(series_actors)
+
+        #print(item.find(class_="", href = re.compile("name")).text)
+
+        # runtime
+        runtime = item.p.find("span", class_ = "runtime").text.strip(' min')
+        #print(runtime)
+        series.append(runtime)
+
+        #print(series)
+        series_list.append(series)
+
+    print(series_list)
+
+
+
     # ADD YOUR CODE HERE TO EXTRACT THE ABOVE INFORMATION ABOUT THE
     # HIGHEST RATED TV-SERIES
     # NOTE: FOR THIS EXERCISE YOU ARE ALLOWED (BUT NOT REQUIRED) TO IGNORE
     # UNICODE CHARACTERS AND SIMPLY LEAVE THEM OUT OF THE OUTPUT.
 
-    return []   # REPLACE THIS LINE AS WELL AS APPROPRIATE
+    return series_list   # REPLACE THIS LINE AS WELL AS APPROPRIATE
 
 
 def save_csv(outfile, tvseries):
@@ -41,6 +96,9 @@ def save_csv(outfile, tvseries):
     """
     writer = csv.writer(outfile)
     writer.writerow(['Title', 'Rating', 'Genre', 'Actors', 'Runtime'])
+
+    for single_series in tvseries:
+        writer.writerow(single_series)
 
     # ADD SOME CODE OF YOURSELF HERE TO WRITE THE TV-SERIES TO DISK
 
@@ -77,7 +135,7 @@ if __name__ == "__main__":
     # get HTML content at target URL
     html = simple_get(TARGET_URL)
 
-    # save a copy to disk in the current directory, this serves as an backup
+    # save a copy to disk in the current directory, this serves as a backup
     # of the original HTML, will be used in grading.
     with open(BACKUP_HTML, 'wb') as f:
         f.write(html)
