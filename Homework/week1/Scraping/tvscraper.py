@@ -41,32 +41,19 @@ def extract_tvseries(dom):
     # use for loop to iterate through series_info and extract relevant info
     for item in series_info:
         series = []
-        # title
+
         title = item.h3.a.text
-        #series.append(title)
-
-        # rating
         rating = item.div.div.strong.text
-        #series.append(rating)
-
-        # genres
         genres = item.p.find("span", class_="genre").text.strip()
-        #series.append(genres)
-
-        # actors
         actors = item.find_all(class_="", href = re.compile("name"))
+
         temp_actors = []
-
         for actor in actors:
-
             temp_actors.append(actor.text)
 
         actors = ", ".join(temp_actors)
-        #series.append(actors)
 
-        # runtime
         runtime = item.p.find("span", class_ = "runtime").text.strip(' min')
-        #series.append(runtime)
 
         series.extend([title, rating, genres, actors, runtime])
         series_list.append(series)
