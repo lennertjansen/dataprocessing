@@ -11,9 +11,12 @@ from requests.exceptions import RequestException
 from contextlib import closing
 from bs4 import BeautifulSoup
 
+# import re for Regular Expressions Operations such as matching a given unicode
+# argument with a href in a DOM.
 import re
 
 TARGET_URL = "http://www.imdb.com/search/title?num_votes=5000,&sort=user_rating,desc&start=1&title_type=tv_series"
+
 BACKUP_HTML = 'tvseries.html'
 OUTPUT_CSV = 'tvseries.csv'
 
@@ -28,33 +31,60 @@ def extract_tvseries(dom):
     - Runtime (only a number!)
     """
 
-    # create variable containing all list elements to be extracted
+    # create variable containing all list elements to be extracted.
     series_info = dom.find_all("div", class_="lister-item-content")
 
-    # determine length of list of tv series
-    list_length = len(series_info)
-
-    # create empty list to be filled with relevant information for csv file
+    # create empty list to be filled with lists containing the specifications
+    # per individual tv show.
     series_list = []
 
-    #print(series_info[0].h3.a.text)
-    # use for loop to iterate through series_info and extract relevant info
+    # use for loop to iterate through series_info and extract relevant info.
     for item in series_info:
+        # create empty list to be filled specifications on a
+        # tv show per iteration.
         series = []
 
-        title = item.h3.a.text
-        rating = item.div.div.strong.text
-        genres = item.p.find("span", class_="genre").text.strip()
-        actors = item.find_all(class_="", href = re.compile("name"))
+        # locate title of current tv show, fill in a dash if not available.
+        title = item.h3.a
+        if not title:
+            title = "-"
+        else:
+            title = title.text
 
+        # locate rating of current tv show, fill in a dash if not available.
+        rating = item.div.div.strong
+        if not rating:
+            rating = "-"
+        else:
+            rating = rating.text
+
+        # locate genres of current tv show, fill in a dash if not available.
+        genres = item.p.find("span", class_="genre")
+        if not genres:
+            genres = "-"
+        else:
+            genres = genres.text.strip()
+
+        # locate actors of current tv show by matching href's containing the
+        # word "name", fill list with these names and finally join the names
+        # into a comma separated string.
+        actors = item.find_all(class_="", href = re.compile("name"))
         temp_actors = []
+
         for actor in actors:
             temp_actors.append(actor.text)
 
         actors = ", ".join(temp_actors)
 
-        runtime = item.p.find("span", class_ = "runtime").text.strip(' min')
+        # locate runtime of current tv show, fill in a dash if not available.
+        runtime = item.p.find("span", class_ = "runtime")
+        if not runtime:
+            runtime = "-"
+        else:
+            runtime = runtime.text.strip(' min')
 
+        # append title, rating, genres, actors and runtime to empty list for
+        # individual tv show, and append this list to list of all series
         series.extend([title, rating, genres, actors, runtime])
         series_list.append(series)
 
@@ -66,7 +96,6 @@ def extract_tvseries(dom):
 
     return series_list   # REPLACE THIS LINE AS WELL AS APPROPRIATE
 
-
 def save_csv(outfile, tvseries):
     """
     Output a CSV file containing highest rated TV-series.
@@ -74,11 +103,10 @@ def save_csv(outfile, tvseries):
     writer = csv.writer(outfile)
     writer.writerow(['Title', 'Rating', 'Genre', 'Actors', 'Runtime'])
 
+    # write every row with elements of a list containing info on one tv show,
+    # and iterate through list of tv shows.
     for single_series in tvseries:
         writer.writerow(single_series)
-
-    # ADD SOME CODE OF YOURSELF HERE TO WRITE THE TV-SERIES TO DISK
-
 
 def simple_get(url):
     """
@@ -96,7 +124,6 @@ def simple_get(url):
         print('The following error occurred during HTTP GET request to {0} : {1}'.format(url, str(e)))
         return None
 
-
 def is_good_response(resp):
     """
     Returns true if the response seems to be HTML, false otherwise
@@ -105,7 +132,6 @@ def is_good_response(resp):
     return (resp.status_code == 200
             and content_type is not None
             and content_type.find('html') > -1)
-
 
 if __name__ == "__main__":
 
