@@ -33,6 +33,7 @@ for (let iter = 0; iter < rowsLength; iter++){
 
 months = ["Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sep",
     "Oct", "Nov", "Dec"]
+var xAxisLength = months.length
 
 celsius = [];
 for (let iter = 250; iter >= -50;){
@@ -49,16 +50,34 @@ yAxisOrigin = [50, 20];
 //y axis
 for (let iter = 0; iter < yAxisLength; iter++){
 
-    yAxisOrigin[1] = 20 + (iter * 30);
+    yAxisOrigin[1] = 20 + (iter * 50);
+
+    if (iter == yAxisLength - 1){
+        ctx.beginPath();
+        ctx.moveTo(yAxisOrigin[0] - 10, yAxisOrigin[1]);
+        ctx.lineTo(yAxisOrigin[0], yAxisOrigin[1]);
+        ctx.font = '10px courier';
+        ctx.textAlign = 'end'
+        ctx.fillText(celsius[iter], yAxisOrigin[0] - 10, yAxisOrigin[1] + 3);
+        ctx.stroke();
+        break;
+    }
 
     ctx.beginPath();
     ctx.moveTo(yAxisOrigin[0] - 10, yAxisOrigin[1]);
     ctx.lineTo(yAxisOrigin[0], yAxisOrigin[1]);
-    ctx.lineTo(yAxisOrigin[0], yAxisOrigin[1] + 30);
+    ctx.lineTo(yAxisOrigin[0], yAxisOrigin[1] + 50);
     ctx.font = '10px courier';
     ctx.textAlign = 'end'
     ctx.fillText(celsius[iter], yAxisOrigin[0] - 10, yAxisOrigin[1] + 3);
     ctx.stroke();
+}
+
+xAxisOrigin = [yAxisOrigin[0], yAxisOrigin[1]];
+
+// x axis
+for (let iter = 0; iter < xAxisLength; iter++){
+    
 }
 
 //
