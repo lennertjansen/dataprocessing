@@ -119,4 +119,8 @@ function reqListener()
 }
 
 var requester = new XMLHttpRequest()
-var getgitit = ""
+var getgitit = "https://lennertjansen.github.io/dataprocessing/Homework/Week2/rawdata.txt"
+
+requester.addEventListener("load", reqListener);
+requester.open("GET", getgitit);
+requester.send();
