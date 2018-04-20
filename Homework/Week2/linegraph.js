@@ -8,7 +8,8 @@
 
 function reqListener()
 {
-    var rawdata = document.getElementById("rawdata").innerHTML.split("\n");
+    //var rawdata = document.getElementById("rawdata").innerHTML.split("\n");
+    var rawdata = this.responseText.split("\n");
 
     var rows = rawdata.slice(1);
     rows.pop();
