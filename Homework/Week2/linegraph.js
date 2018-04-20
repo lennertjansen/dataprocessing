@@ -6,11 +6,6 @@
 *
 */
 
-// // create XMLHttpRequest
-// var xhttp = new XMLHttpRequest();// when ready run
-//
-// xhttp.onreadystatechange = function(){
-
 function reqListener()
 {
     var rawdata = document.getElementById("rawdata").innerHTML.split("\n");
@@ -52,7 +47,7 @@ function reqListener()
     var canvas = document.getElementById('myCanvas');
     var ctx = canvas.getContext('2d');
 
-    yAxisOrigin = [50, 20];
+    yAxisOrigin = [300, 20];
 
     var [x, y] = yAxisOrigin;
 
@@ -82,6 +77,18 @@ function reqListener()
         ctx.stroke();
     }
 
+    //y axis label
+    yAxisCenter = [x, (yAxisOrigin[1] + y) / 2];
+    ctx.font = '18px courier';
+    ctx.save();
+    ctx.translate(yAxisCenter[0], yAxisCenter[1]);
+    ctx.rotate(-90 * (Math.PI / 180));
+    ctx.textAlign = 'center';
+    ctx.fillText('Temperature in degrees centigrade (C)', 0, -50);
+    ctx.restore();
+    ctx.stroke();
+
+
     xAxisOrigin = [x, y];
 
     // x axis
@@ -93,18 +100,33 @@ function reqListener()
         ctx.moveTo(x, y + 10);
         ctx.lineTo(x, y);
         ctx.lineTo(x + 80, y);
-        ctx.font = '10 px courier';
-        ctx.textAlign = 'center';
-        ctx.fillText(months[iter], x - 10, y + 17);
+        ctx.font = '15px courier';
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(-Math.PI / 4);
+        ctx.textAlign = 'right';
+        ctx.fillText(months[iter], -10, 17);
+        ctx.restore();
         ctx.stroke();
     }
+
+    //x axis label
+    xAxisCenter = [((x - xAxisOrigin[0]) / 2) + yAxisOrigin[0], y];
+    ctx.font = '18px courier';
+    ctx.save();
+    ctx.translate(xAxisCenter[0], xAxisCenter[1]);
+    ctx.rotate(0 * (Math.PI / 180));
+    ctx.textAlign = 'center';
+    ctx.fillText('Months of the year 2017', 0, 100);
+    ctx.restore();
+    ctx.stroke();
 
     var xScale = x + 80 - xAxisOrigin[0];
     var yScale = xAxisOrigin[1] - yAxisOrigin[1];
 
     var yZero = xAxisOrigin[1] - 70;
 
-    var fromPoint = [50, yZero - (temperatures[0] * (70 / 50))];
+    var fromPoint = [yAxisOrigin[0], yZero - (temperatures[0] * (70 / 50))];
 
     for (i = 1; i < 366; i++){
 
