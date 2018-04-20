@@ -11,14 +11,19 @@ function reqListener()
     //var rawdata = document.getElementById("rawdata").innerHTML.split("\n");
     var rawdata = this.responseText.split("\n");
 
+    // slice rows
     var rows = rawdata.slice(1);
     rows.pop();
 
+    // create empty lists for dates and temperatures
     var dates = [];
     var temperatures = [];
 
+    // determine row length
     let rowsLength = rows.length;
 
+    // iterate through lst of dates and temperatures and extract info into
+    // seperate lists
     for (let iter = 0; iter < rowsLength; iter++){
 
         let stringLength = rows[iter].length;
@@ -34,10 +39,12 @@ function reqListener()
 
     }
 
+    // create list for month labels
     months = ["Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sep",
         "Oct", "Nov", "Dec"]
     var xAxisLength = months.length
 
+    // create list for temperature labels
     celsius = [];
     for (let iter = 25; iter >= -5;){
         celsius.push(iter);
@@ -45,17 +52,25 @@ function reqListener()
     }
     var yAxisLength = celsius.length
 
+    // create canvas element
     var canvas = document.getElementById('myCanvas');
     var ctx = canvas.getContext('2d');
 
+    // select origin of y axis arbitrarily
     yAxisOrigin = [300, 20];
 
+    // create two coordinate variables so we can track where the last line was
+    // drawn
     var [x, y] = yAxisOrigin;
 
-    //y axis
+    // create variables for lengths of x and y axis segments
+    var yAxisSegment = 70;
+    var xAxisSegment = 80;
+
+    // create y axis
     for (let iter = 0; iter < yAxisLength; iter++){
 
-        y = yAxisOrigin[1] + (iter * 70);
+        y = yAxisOrigin[1] + (iter * yAxisSegment);
 
         if (iter == yAxisLength - 1){
             ctx.beginPath();
@@ -71,7 +86,7 @@ function reqListener()
         ctx.beginPath();
         ctx.moveTo(x - 10, y);
         ctx.lineTo(x, y);
-        ctx.lineTo(x, y + 70);
+        ctx.lineTo(x, y + yAxisSegment);
         ctx.font = '10px courier';
         ctx.textAlign = 'end'
         ctx.fillText(celsius[iter], x - 10, y + 3);
@@ -95,12 +110,12 @@ function reqListener()
     // x axis
     for (let iter = 0; iter < xAxisLength; iter++){
 
-        x = xAxisOrigin[0] + (iter * 80);
+        x = xAxisOrigin[0] + (iter * xAxisSegment);
 
         ctx.beginPath();
         ctx.moveTo(x, y + 10);
         ctx.lineTo(x, y);
-        ctx.lineTo(x + 80, y);
+        ctx.lineTo(x + xAxisSegment, y);
         ctx.font = '15px courier';
         ctx.save();
         ctx.translate(x, y);
@@ -122,16 +137,21 @@ function reqListener()
     ctx.restore();
     ctx.stroke();
 
-    var xScale = x + 80 - xAxisOrigin[0];
+    // determine lengths of x and y axis
+    var xScale = x + xAxisSegment - xAxisOrigin[0];
     var yScale = xAxisOrigin[1] - yAxisOrigin[1];
 
-    var yZero = xAxisOrigin[1] - 70;
+    // determine point on y axis where zero degrees centigrade is
+    var yZero = xAxisOrigin[1] - yAxisSegment;
 
-    var fromPoint = [yAxisOrigin[0], yZero - (temperatures[0] * (70 / 50))];
+    // determine starting point of linegraph
+    var fromPoint = [yAxisOrigin[0], yZero - (temperatures[0] * (yAxisSegment / 50))];
 
+    // draw line by iteratively calculating next point by determining relative
+    // position from the origin of x and y axes
     for (i = 1; i < 366; i++){
 
-        toPoint = [fromPoint[0] + (xScale * (1 / 365)), yZero - (temperatures[i] * (70 / 50))];
+        toPoint = [fromPoint[0] + (xScale * (1 / 365)), yZero - (temperatures[i] * (yAxisSegment / 50))];
         ctx.beginPath();
         ctx.moveTo(fromPoint[0], fromPoint[1]);
         ctx.lineTo(toPoint[0], toPoint[1]);
@@ -141,9 +161,10 @@ function reqListener()
     }
 }
 
-var requester = new XMLHttpRequest()
-var getgitit = "https://lennertjansen.github.io/dataprocessing/Homework/Week2/rawdata.txt"
+// create XML HTTP request
+var request = new XMLHttpRequest()
+var getgit = "https://lennertjansen.github.io/dataprocessing/Homework/Week2/rawdata.txt"
 
-requester.addEventListener("load", reqListener);
-requester.open("GET", getgitit);
-requester.send();
+request.addEventListener("load", reqListener);
+request.open("GET", getgit);
+request.send();
