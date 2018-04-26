@@ -1,0 +1,59 @@
+[
+{"Country": "Denmark",
+ "gdp_per_capita": "144.178"
+ },
+{"Country": "Switzerland",
+ "gdp_per_capita": "152.733"
+ },
+{"Country": "Iceland",
+ "gdp_per_capita": "142.666"
+ },
+{"Country": "Norway",
+ "gdp_per_capita": "157.744"
+ },
+{"Country": "Finland",
+ "gdp_per_capita": "140.598"
+},
+{"Country": "Canada",
+ "gdp_per_capita": "144.015"
+},
+{"Country": "Netherlands",
+ "gdp_per_capita": "146.468"
+},
+{"Country": "New Zealand",
+ "gdp_per_capita": "136.066"
+},
+{"Country": "Australia",
+ "gdp_per_capita": "144.443"
+},
+{"Country": "Sweden",
+ "gdp_per_capita": "145.181"
+},
+{"Country": "Israel",
+ "gdp_per_capita": "133.766"
+},
+{"Country": "Austria",
+ "gdp_per_capita": "145.038"
+},
+{"Country": "United States",
+ "gdp_per_capita": "150.796"
+},
+{"Country": "Costa Rica",
+ "gdp_per_capita": "106.879"
+},
+{"Country": "Puerto Rico",
+ "gdp_per_capita": "135.943"
+},
+{"Country": "Germany",
+ "gdp_per_capita": "144.787"
+},
+{"Country": "Brazil",
+ "gdp_per_capita": "108.754"
+},
+{"Country": "Belgium",
+ "gdp_per_capita": "142.539"
+},
+{"Country": "Ireland",
+ "gdp_per_capita": "148.341"
+}
+]

@@ -24,7 +24,8 @@ d3.json("2016_manual_copy.json", function(data) {
                 .append("svg")
                 .attr("class", "chart")
                 .attr("width", w  + (padding * 2))
-                .attr("height", h + padding);
+                .attr("height", h + padding)
+                .attr("transform", "translate(" + padding + "," + 0 + ")");
 
     // generate linear scale for height and create corresponding y axis function
     var yScale = d3.scale.linear()
@@ -38,58 +39,47 @@ d3.json("2016_manual_copy.json", function(data) {
     // generate linear scale for height and create corresponding y axis function
     var xScale = d3.scale.ordinal()
                     .domain(countries)
-                    //.rangeRoundBands([0, w], .1);
-                    .rangeRoundBands([0, w + padding]);
+                    .rangeRoundBands([0, w], .1);
     var xAxis = d3.svg.axis()
                     .scale(xScale)
                     .orient("bottom");
                     //.ticks(20);
 
-    var tip = d3.tip()
-        .attr('class', 'd3-tip')
-        .offset([-10, 0])
-        .html(function(d) {
-            return "<strong>Frequency:</strong> <span style='color:red'>" + d.gdp_per_capita + "</span>";
-        })
-    svg.call(tip);
+    // calculate desired bar width
+    barWidth = w / data.length;
 
-    // placing a bar for every data value with 'd'
-    svg.selectAll("rect")
-       .data(gdpPerCapita)
-       .enter()
-       .append("rect")
-    // calculating the width of every bar
-        .attr("x", function(d, i){
-            return (i * ((w + (padding)) / data.length)) + padding
-        })
-        // and height
-        .attr("y", function(d, i){
-                return yScale(d)
-        })
-        // calculating the width of my whole graphic
-        .attr("width", w / data.length - barSpace)
-        // and its height
-        .attr("height", function (d){
-            return h - yScale(d);
-            })
-        // filling the bars with color
-        .attr("fill", function(d) {
-                    return "rgb(213, 0, " + (d * 10) + ")";
-        });
+    // create variable with desired properties of svg rect element
+    var bar = svg.selectAll("g")
+                    .data(data)
+                    .enter()
+                    .append("g")
+                    .attr("transform", function(d, i) {
+                         return "translate(" + (i * barWidth) + ",0)";
+                     });
 
+    // generate visual bar element for corresponding datum with desired spacing
+    bar.append("rect")
+        .attr("y", function(d) { return yScale(d.gdp_per_capita); })
+        .attr("height", function(d) { return h - yScale(d.gdp_per_capita); })
+        .attr("width", barWidth - barSpace);
+
+    bar.append("text")
+        .attr("x", barWidth / 2)
+        .attr("y", function(d) { return yScale(d.gdp_per_capita) + 3; })
+        .attr("dy", ".75em")
+        .text(function(d) { return d.gdp_per_capita; });
 
 
     // generate visual element for the y axis by calling yAxis function
     svg.append("g")
         .attr("class", "y axis")
-        //.attr("transform", "translate(" + 40 + ",40)")
-        .attr("transform", "translate(" + padding + ",40)")
+        .attr("transform", "translate(" + 40 + ",40)")
         .call(yAxis);
 
     // generate visual element for the x axis by calling xAxis function
     svg.append("g")
         .attr("class", "x axis")
-        .attr("transform", "translate(40," + (h + barSpace) + ")")
+        .attr("transform", "translate(40," + (h - padding) + ")")
         .call(xAxis)
         .selectAll("text")
         .attr("y", 0)
