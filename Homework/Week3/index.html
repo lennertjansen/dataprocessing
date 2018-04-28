@@ -2,13 +2,31 @@
 <html>
   <head>
         <meta charset="utf-8">
-        <link rel="stylesheet" href="style.css">
         <script type="text/javascript" src="d3.js"></script>
         <script type="text/javascript" src="script.js"></script>
         <script type="text/javascript" src="tip.js"></script>
         <title>Barcharts and Happiness</title>
         <h1>Data visualisation of the World Happiness Report 2016</h1>
         <style>
+
+            h1 {
+                font-family: courier;
+                color: magenta;
+            }
+
+            p {
+                font-family: courier;
+                color: pink;
+            }
+
+            div.bar {
+                display: inline-block;
+                width: 20px;
+                height: 75px;   /* We'll override this later */
+                background-color: teal;
+                margin-right : 2px;
+            }
+
             .axis path,
             .axis line {
                 fill: none;
@@ -72,12 +90,11 @@
   </head>
   <body>
       <script type="text/javascript">
-      // writing information to webpage per paragraph
-      paragraph = d3.select("body")
-      paragraph.append("p").text("Name: Lennert Jansen")
-      paragraph.append("p").text("Student Number: 10488952")
-      paragraph.append("p").text("An interactive barchart depicting the GDP's per capita of the top 19 happiest countries according to the World Happiness Report 2016")
-  </script>
+          paragraph = d3.select("body")
+          paragraph.append("p").text("Name: Lennert Jansen")
+          paragraph.append("p").text("Student Number: 10488952")
+          paragraph.append("p").text("An interactive barchart depicting the GDP's per capita of the top 19 happiest countries according to the World Happiness Report 2016")
+      </script>
   </body>
   <footer>
     <a href = https://www.kaggle.com/unsdsn/world-happiness> source of data set</a>

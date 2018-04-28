@@ -1,0 +1,10 @@
+Beste nakijker, 
+
+Zoals jullie waarschijnlijk hebben gemerkt is het JSON-bestand dat mijn convertCSV2JSON.py programma uitdraait niet hetzelfde bestand dat ik in scripts.js inlaad.
+Hoewel het verschil heel minimaal is (indentatie en een paar comma's op elke nieuwe regel), is het mij de hele week niet gelukt om er voor te zorgen dat het CSV-bestand
+werd omgezet tot het juiste JSON-formaat. Dat wil zeggen, mijn scripts.js kreeg ik niet aan de praat met het JSON-bestand dat door de converter wordt uitgedraaid,
+maar zodra ik de indentatie aanpaste werkte het wel.
+Ik begrijp dat dit niet de bedoeling was, maar dit probleem ontdekte ik pas na woensdag, waardoor ik geen kans meer had om een TA te spreken.
+Excuses hiervoor. Voor de rest werkt mijn programma wel zoals gevraagd en zijn alle onderdelen van de checklist voltooid.
+
+Lennert

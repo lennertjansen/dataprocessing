@@ -1,4 +1,7 @@
 /*
+* PLEASE READ DISCLAIMER.txt
+*
+*
 * Name: Lennert Jansen
 * Student number: 10488952
 * Data Processing, Spring 2018
