@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-        <link rel="stylesheet" type="text/css" href="style.css">
         <meta charset="utf-8">
+        <link rel="stylesheet" href="style.css">
+        <script type="text/javascript" src="d3.js"></script>
+        <script type="text/javascript" src="script.js"></script>
+        <script type="text/javascript" src="tip.js"></script>
         <title>Barcharts and Happiness</title>
         <h1>Data visualisation of the World Happiness Report 2017</h1>
-        <script type="text/javascript" src="d3/d3.v3.js"></script>
         <style>
             .axis path,
             .axis line {
@@ -32,13 +34,14 @@
               text-anchor: middle;
             }
 
-            .bar {
+            /* .bar {
                 fill: steelblue;
-            }
+            } */
 
             .d3-tip {
                 line-height: 1;
-                font-weight: bold;
+                font: courier;
+                /* font-weight: bold; */
                 padding: 12px;
                 background: rgba(0, 0, 0, 0.8);
                 color: #fff;
@@ -50,6 +53,7 @@
               box-sizing: border-box;
               display: inline;
               font-size: 10px;
+              font: courier;
               width: 100%;
               line-height: 1;
               color: rgba(0, 0, 0, 0.8);
@@ -67,7 +71,12 @@
         </style>
   </head>
   <body>
-        <script type="text/javascript" src = "script.js"></script>
-        <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+      <script type="text/javascript">
+      // writing information to webpage per paragraph
+      paragraph = d3.select("body")
+      paragraph.append("p").text("Name: Lennert Jansen")
+      paragraph.append("p").text("Student Number: 10488952")
+      paragraph.append("p").text("Barchart")
+  </script>
   </body>
 </html>
