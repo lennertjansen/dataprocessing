@@ -1,0 +1,18 @@
+
+h1 {
+    font-family: courier;
+    color: magenta;
+}
+
+p {
+    font-family: courier;
+    color: pink;
+}
+
+div.bar {
+    display: inline-block;
+    width: 20px;
+    height: 75px;   /* We'll override this later */
+    background-color: teal;
+    margin-right : 2px;
+}
