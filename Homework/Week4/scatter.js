@@ -13,7 +13,9 @@ window.onload = function() {
     authorInfo = d3.select("body")
                 .append("p").text("Name: Lennert Jansen")
                 .append("p").text("Student number: 10488952")
-                .append("p").text("Course: Data processing, spring 2018");
+                .append("p").text("Course: Data processing, spring 2018")
+                .append("p").append("a").text("Link to source (OECD)").attr("href", "http://stats.oecd.org/BrandedView.aspx?oecd_bv_id=region-data-en&doi=data-00531-en");
+
 
     // get data using API queries
     var dataAPI2012 = "http://stats.oecd.org/SDMX-JSON/data/CITIES/US106+US107+US114+US012+US122+US124+US125+US128+US134+US135+US014+US146+US190+US196+US202+US209+US210+US242+US245+US250+US259+US003+US033+US045+US048+US055+US069+US084+US103+US115+US117+US133+US141+US147+US149+US154+US155+US159+US160+US161+US170+US174+US178+US180+US181+US186+US195+US205+US212+US213+US223+US227+US233+US234+US237+US241+US251+US252+US261+US035+US038+US039+US044+US060+US065+US070+US077+US081+US089+US097.POP_CORE+POP_DENS_CORE+GDP_PC+LABOUR_PRODUCTIVITY+UNEMP_R/all?startTime=2012&endTime=2012&dimensionAtObservation=allDimensions"
@@ -73,15 +75,15 @@ window.onload = function() {
 
         var body = d3.select('body')
         var selectData = [  { "text" : "unemp_r", "label" : "Unemployment rate (%)"},
-                            { "text" : "gdp_pc" },
-                            { "text" : "pop_core" },
-                            { "text" : "pop_dens_core"},
-                            { "text" : "labour_productivity"},
+                            { "text" : "gdp_pc", "label" : "GDP per capita (USD 2010)"},
+                            { "text" : "pop_core", "label" : "Population (persons)"},
+                            { "text" : "pop_dens_core", "label" : "Poplation density (persons per km2)"},
+                            { "text" : "labour_productivity", "label" : "Labour productivity (Ratio between GDP and total employment)"},
                         ];
 
         // Select Y-axis Variable
         var span = body.append('span')
-                        .text('Select Y-Axis variable: ')
+                        .text('Select y-axis variable: ')
         var yInput = body.append('select')
                          .attr('id','ySelect')
                          .on('change',yChange)
@@ -90,12 +92,26 @@ window.onload = function() {
                          .enter()
                          .append('option')
                          .attr('value', function (d) { return d.text })
-                         .text(function (d) { return d.text ;})
+                         .text(function (d) { return d.label ;});
+        body.append('br')
+
+        // Select X-axis Variable
+        var span = body.append('span')
+                        .text('Select X-Axis variable: ')
+        var yInput = body.append('select')
+                          .attr('id','xSelect')
+                          .on('change',xChange)
+                          .selectAll('option')
+                          .data(selectData)
+                          .enter()
+                          .append('option')
+                          .attr('value', function (d) { return d.text })
+                          .text(function (d) { return d.label ;})
         body.append('br')
 
         // set dimensions for svg canvas including margins
         var margin = {
-            top: 20,
+            top: 30,
             right: 210,
             bottom: 50,
             left: 70
@@ -119,7 +135,7 @@ window.onload = function() {
         // create scale for radii as a function of population of the city
         var rScale = d3.scaleLinear()
                         .domain(d3.extent(data2012, function(d) {return d.pop_core})).nice()
-                        .range([5, 40]);
+                        .range([5, 30]);
 
         // create color scale for population density
         var colorScale = d3.scaleOrdinal()
@@ -158,11 +174,13 @@ window.onload = function() {
 
         // draw axes and corresponding labels
         svg.append("g")
+            .attr('id','xAxis')
             .attr("class", "x axis")
             .attr("transform", "translate(0, " + height + ")")
             .call(xAxis);
 
         svg.append("text")
+            .attr('id', 'xAxisLabel')
             .attr("class", "axisLabel")
             .attr("transform", "translate(0, " + height + ")")
             .attr("x", width)
@@ -268,6 +286,15 @@ window.onload = function() {
                 .style("text-anchor", "end")
                 .text("Low relative population density");
 
+        svg.append("text")
+            .attr("font-size", "8px")
+            .attr("font-family", "arial")
+            .attr("x", width)
+            .attr("y", 140)
+            .attr("dy", ".35em")
+            .style("text-anchor", "end")
+            .text("*The radii of the circles represent population");
+
         // change the value depicted on the y axis, along with the scale
         function yChange() {
 
@@ -276,8 +303,10 @@ window.onload = function() {
             yAxis.scale(yScale) // change scale and axis
 
             d3.select('#yAxis') // draw new y axis
-              .transition().duration(500)
+              .transition().duration(1000)
               .call(yAxis)
+
+
 
             d3.select('#yAxisLabel') // change label
               .text(value)
@@ -292,6 +321,38 @@ window.onload = function() {
               });
 
         };
+
+        function xChange() {
+
+            var value = this.value // get the new x value
+            xScale.domain(d3.extent(data2012, function(d) { return d[value]}))
+
+            xAxis.scale(xScale) // change the xScale
+            d3.select('#xAxis') // redraw the xAxis
+                .transition().duration(1000)
+                .call(xAxis)
+
+            d3.select('#xAxisLabel') // change the xAxisLabel
+              .transition().duration(1000)
+              .text(value)
+
+            d3.selectAll('circle') // move the circles
+               .transition().duration(500)
+               .delay(function (d,i) {
+                    return i * 100
+                })
+               .attr('cx',function (d) {
+                   return xScale(d[value])
+               });
+}
+
+        function yLabelChange(){
+
+            var value = this.value
+
+            d3.select('#yAxisLabel') // change label
+              .text(value)
+        }
 
     };
 };
