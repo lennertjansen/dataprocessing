@@ -13,7 +13,7 @@ window.onload = function() {
     authorInfo = d3.select("body")
                 .append("p").text("Name: Lennert Jansen")
                 .append("p").text("Student number: 10488952")
-                .append("p").text("Description");
+                .append("p").text("Course: Data processing, spring 2018");
 
     // get data using API queries
     var dataAPI2012 = "http://stats.oecd.org/SDMX-JSON/data/CITIES/US106+US107+US114+US012+US122+US124+US125+US128+US134+US135+US014+US146+US190+US196+US202+US209+US210+US242+US245+US250+US259+US003+US033+US045+US048+US055+US069+US084+US103+US115+US117+US133+US141+US147+US149+US154+US155+US159+US160+US161+US170+US174+US178+US180+US181+US186+US195+US205+US212+US213+US223+US227+US233+US234+US237+US241+US251+US252+US261+US035+US038+US039+US044+US060+US065+US070+US077+US081+US089+US097.POP_CORE+POP_DENS_CORE+GDP_PC+LABOUR_PRODUCTIVITY+UNEMP_R/all?startTime=2012&endTime=2012&dimensionAtObservation=allDimensions"
@@ -32,10 +32,6 @@ window.onload = function() {
         var jsonData2012 = JSON.parse(response[0].responseText);
         var jsonData2013 = JSON.parse(response[1].responseText);
 
-        // console.log(jsonData2012.dataSets[0].observations["0:0:0"][0]);
-        // console.log(jsonData2012.structure.dimensions.observation[0].values[69]["name"]);
-
-        // create empty dict in which all relevant data will be stored by year
         data2012 = [];
         data2013 = [];
 
@@ -74,6 +70,28 @@ window.onload = function() {
         };
 
         data = [[data2012], [data2013]];
+
+        var body = d3.select('body')
+        var selectData = [  { "text" : "unemp_r", "label" : "Unemployment rate (%)"},
+                            { "text" : "gdp_pc" },
+                            { "text" : "pop_core" },
+                            { "text" : "pop_dens_core"},
+                            { "text" : "labour_productivity"},
+                        ];
+
+        // Select Y-axis Variable
+        var span = body.append('span')
+                        .text('Select Y-Axis variable: ')
+        var yInput = body.append('select')
+                         .attr('id','ySelect')
+                         .on('change',yChange)
+                         .selectAll('option')
+                         .data(selectData)
+                         .enter()
+                         .append('option')
+                         .attr('value', function (d) { return d.text })
+                         .text(function (d) { return d.text ;})
+        body.append('br')
 
         // set dimensions for svg canvas including margins
         var margin = {
@@ -124,9 +142,6 @@ window.onload = function() {
             }
         };
 
-        // var color = d3.scaleOrdinal(d3.schemeCategory10);
-
-
         // initialize axes
         var xAxis = d3.axisBottom()
                        .scale(xScale);
@@ -139,7 +154,7 @@ window.onload = function() {
                     .attr("width", outerWidth)
                     .attr("height", outerHeight)
                     .append("g")
-                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")"); // deze laatste twee stappen snap ik niet
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         // draw axes and corresponding labels
         svg.append("g")
@@ -156,10 +171,12 @@ window.onload = function() {
             .text("GDP per capita (USD 2010)");
 
         svg.append("g")
+            .attr('id','yAxis')
             .attr("class", "y axis")
             .call(yAxis);
 
         svg.append("text")
+            .attr('id', 'yAxisLabel')
             .attr("class", "axisLabel")
             .attr("transform", "rotate(-90)")
             .attr("y", 6)
@@ -171,7 +188,9 @@ window.onload = function() {
         var tip = d3.tip()
           	.attr("class", "d3-tip")
     		.offset([-20, 0]).html(function(d, i) {
-    		 return "<strong>City:</strong> <span style='color:white'>" + d.name + "</span>" + "<br>" + "Population: " + d.pop_core });
+    		 return "<strong>City:</strong> <span style='color:white'>" + d.name
+              + "</span>" + "<br>" + "Population: " + d.pop_core + "<br>" +
+          "Population density: " + d.pop_dens_core });
 
     	svg.call(tip);
 
@@ -249,15 +268,30 @@ window.onload = function() {
                 .style("text-anchor", "end")
                 .text("Low relative population density");
 
+        // change the value depicted on the y axis, along with the scale
+        function yChange() {
 
-        // svg.append("text")
-        //     .attr("class", "yearText")
-        //     .attr("dy", ".35em")
-        //     .attr("x", width - 100)
-        //     .attr("y", height - 100)
-        //     .attr("dy", ".35em")
-        //     .style("text-anchor", "end")
-        //     .text("2012");
+            var value = this.value // get it
+            yScale.domain(d3.extent(data2012, function(d) { return d[value]}))
+            yAxis.scale(yScale) // change scale and axis
+
+            d3.select('#yAxis') // draw new y axis
+              .transition().duration(500)
+              .call(yAxis)
+
+            d3.select('#yAxisLabel') // change label
+              .text(value)
+
+            d3.selectAll('circle')
+              .transition().duration(500)
+              .delay(function(d, i) {
+                  return i * 100;
+              })
+              .attr('cy', function(d) {
+                  return yScale(d[value]);
+              });
+
+        };
 
     };
 };
