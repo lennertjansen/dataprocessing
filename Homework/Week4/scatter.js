@@ -1,7 +1,7 @@
 /*
 * Name: Lennert Jansen
 * Student number: 10488952
-* Date: 30 April 2018
+* Date: 4 May 2018
 * Scatterplot in JS
 *
 */
@@ -20,23 +20,22 @@ window.onload = function() {
     // get data using API queries
     var dataAPI2012 = "http://stats.oecd.org/SDMX-JSON/data/CITIES/US106+US107+US114+US012+US122+US124+US125+US128+US134+US135+US014+US146+US190+US196+US202+US209+US210+US242+US245+US250+US259+US003+US033+US045+US048+US055+US069+US084+US103+US115+US117+US133+US141+US147+US149+US154+US155+US159+US160+US161+US170+US174+US178+US180+US181+US186+US195+US205+US212+US213+US223+US227+US233+US234+US237+US241+US251+US252+US261+US035+US038+US039+US044+US060+US065+US070+US077+US081+US089+US097.POP_CORE+POP_DENS_CORE+GDP_PC+LABOUR_PRODUCTIVITY+UNEMP_R/all?startTime=2012&endTime=2012&dimensionAtObservation=allDimensions"
 
-    var dataAPI2013 = "http://stats.oecd.org/SDMX-JSON/data/CITIES/US106+US107+US114+US012+US122+US124+US125+US128+US134+US135+US014+US146+US190+US196+US202+US209+US210+US242+US245+US250+US259+US003+US033+US045+US048+US055+US069+US084+US103+US115+US117+US133+US141+US147+US149+US154+US155+US159+US160+US161+US170+US174+US178+US180+US181+US186+US195+US205+US212+US213+US223+US227+US233+US234+US237+US241+US251+US252+US261+US035+US038+US039+US044+US060+US065+US070+US077+US081+US089+US097.POP_CORE+POP_DENS_CORE+GDP_PC+LABOUR_PRODUCTIVITY+UNEMP_R/all?startTime=2013&endTime=2013&dimensionAtObservation=allDimensions"
 
     // queue the querying process to avoid problems as a result of asynchronicity
     d3.queue()
         .defer(d3.request, dataAPI2012)
-        .defer(d3.request, dataAPI2013)
         .awaitAll(doFunction);
 
     function doFunction(error, response) {
         if (error) throw error;
 
+        // parse API string into correct JSON format
         var jsonData2012 = JSON.parse(response[0].responseText);
-        var jsonData2013 = JSON.parse(response[1].responseText);
 
+        // create empty object to store data in
         data2012 = [];
-        data2013 = [];
 
+        // organise the scattered JSON objects
         for (let i = 0; i < 70; i++){
 
             index0 = i + ":" + "0:0"; // index for gdp per capita
@@ -55,25 +54,16 @@ window.onload = function() {
                 "labour_productivity": jsonData2012.dataSets[0].observations[index4][0]
             };
 
-            // create object in which a single city's info will be stored
-            cityObject1 = {
-                "name": jsonData2013.structure.dimensions.observation[0].values[i]["name"],
-                "gdp_pc": jsonData2013.dataSets[0].observations[index0][0],
-                "unemp_r": jsonData2013.dataSets[0].observations[index1][0],
-                "pop_core": jsonData2013.dataSets[0].observations[index2][0],
-                "pop_dens_core": jsonData2013.dataSets[0].observations[index3][0],
-                "labour_productivity": jsonData2013.dataSets[0].observations[index4][0]
-            };
 
             // push city object to data dictionary
             data2012.push(cityObject0);
-            data2013.push(cityObject1);
 
         };
 
-        data = [[data2012], [data2013]];
+        // create variable for the DOM element body
+        var body = d3.select('body');
 
-        var body = d3.select('body')
+        // create list of objects for the dropdown menus
         var selectData = [  { "text" : "unemp_r", "label" : "Unemployment rate (%)"},
                             { "text" : "gdp_pc", "label" : "GDP per capita (USD 2010)"},
                             { "text" : "pop_core", "label" : "Population (persons)"},
@@ -81,33 +71,37 @@ window.onload = function() {
                             { "text" : "labour_productivity", "label" : "Labour productivity (Ratio between GDP and total employment)"},
                         ];
 
-        // Select Y-axis Variable
+        // create dropdown menu and corresponding span for y axis variables
         var span = body.append('span')
-                        .text('Select y-axis variable: ')
+                        .text('Select y-axis variable: ');
+
         var yInput = body.append('select')
                          .attr('id','ySelect')
-                         .on('change',yChange)
+                         .on('change',yChange) // call yCange function on input
                          .selectAll('option')
                          .data(selectData)
                          .enter()
                          .append('option')
                          .attr('value', function (d) { return d.text })
                          .text(function (d) { return d.label ;});
-        body.append('br')
 
-        // Select X-axis Variable
+        body.append('br') // break for space between menus
+
+        // create dropdown menu and corresponding span for y axis variables
         var span = body.append('span')
-                        .text('Select X-Axis variable: ')
+                        .text('Select x-Axis variable: ');
+
         var yInput = body.append('select')
                           .attr('id','xSelect')
-                          .on('change',xChange)
+                          .on('change',xChange) // call xCange function on input
                           .selectAll('option')
                           .data(selectData)
                           .enter()
                           .append('option')
                           .attr('value', function (d) { return d.text })
                           .text(function (d) { return d.label ;})
-        body.append('br')
+
+        body.append('br') // break for space bottom menu and svg canvas
 
         // set dimensions for svg canvas including margins
         var margin = {
@@ -135,13 +129,15 @@ window.onload = function() {
         // create scale for radii as a function of population of the city
         var rScale = d3.scaleLinear()
                         .domain(d3.extent(data2012, function(d) {return d.pop_core})).nice()
-                        .range([5, 30]);
+                        .range([5, 30]); // arbitrarily chosen min and max radii
 
         // create color scale for population density
         var colorScale = d3.scaleOrdinal()
                             .domain(d3.extent(data2012, function(d) {return d.pop_dens_core}))
                             .range([1, 2, 3]);
 
+        // categorise population density into three categories and represent
+        // using colorblind friendly sequential coloring
         function color(density){
 
             maxDens = d3.extent(data2012, function(d) {return d.pop_dens_core})[1];
@@ -170,15 +166,17 @@ window.onload = function() {
                     .attr("width", outerWidth)
                     .attr("height", outerHeight)
                     .append("g")
-                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                    .attr("transform", "translate(" + margin.left + "," +
+                    margin.top + ")");
 
-        // draw axes and corresponding labels
+        // dwar x axis
         svg.append("g")
             .attr('id','xAxis')
             .attr("class", "x axis")
             .attr("transform", "translate(0, " + height + ")")
             .call(xAxis);
 
+        // write the first x axis label
         svg.append("text")
             .attr('id', 'xAxisLabel')
             .attr("class", "axisLabel")
@@ -188,11 +186,13 @@ window.onload = function() {
             .style("text-anchor", "end")
             .text("GDP per capita (USD 2010)");
 
+        // draw y axis
         svg.append("g")
             .attr('id','yAxis')
             .attr("class", "y axis")
             .call(yAxis);
 
+        // write the first y axis label
         svg.append("text")
             .attr('id', 'yAxisLabel')
             .attr("class", "axisLabel")
@@ -202,7 +202,7 @@ window.onload = function() {
             .style("text-anchor", "end")
             .text("Unemployment rate (%)");
 
-        // creating info window
+        // create info box for tip containing name, population and density
         var tip = d3.tip()
           	.attr("class", "d3-tip")
     		.offset([-20, 0]).html(function(d, i) {
@@ -231,34 +231,38 @@ window.onload = function() {
                 return color(d.pop_dens_core);
             })
             .style("stroke", "black")
-            .on("mouseover", tip.show)
+            .on("mouseover", tip.show) // ensure tip appears and disappears
 			.on("mouseout", tip.hide);
 
-		var colorDensity = {
-                low: "#fde0dd",
-                med: "#fa9fb5",
-                high: "#c51b8a"
+        // create color density object for legend
+        var colorDensity = {
+            low: "#fde0dd",
+            med: "#fa9fb5",
+            high: "#c51b8a"
         };
+        legendIndex = [1, 2, 3];
 
-        seh = [1, 2, 3];
-
+        // create legend in upper right corner as three colored squares
         svg.selectAll("legend")
-			            .data(seh)
-			            .enter()
-			            .append("rect")
-			            .attr("class", "legend")
-		                .attr("y", function(d, i){
-		      		         return height - height + 100 - (i * 30);
-		      	        })
-		                .attr("x", width)
-		                .attr("width", 20)
-		                .attr("height", 20)
-            		    .style("fill", function(d, i){
-            		      	if (height - height + 100 - (i * 30) == 100 ) {return "#fde0dd"}
-            		      	else if (height - height + 100 - (i * 30) == 70) {return "#fa9fb5"}
-            		      	else {return "#c51b8a"}
-            		    });
+			.data(legendIndex)
+			.enter()
+			.append("rect")
+			.attr("class", "legend")
+		    .attr("y", function(d, i){
+		        return height - height + 100 - (i * 30);
+		    })
+		    .attr("x", width)
+		    .attr("width", 20)
+		    .attr("height", 20)
+            .style("fill", function(d, i){
+                if (height - height + 100 - (i * 30) == 100 )
+                    {return "#fde0dd"}
+                else if (height - height + 100 - (i * 30) == 70)
+                    {return "#fa9fb5"}
+            	else {return "#c51b8a"}
+            });
 
+        // append descriptions of what a color represents in the plot
         svg.append("text")
             .attr("font-size", "10px")
             .attr("font-family", "arial")
@@ -278,14 +282,15 @@ window.onload = function() {
             .text("Medium relative population density");
 
         svg.append("text")
-                .attr("font-size", "10px")
-                .attr("font-family", "arial")
-                .attr("x", width - 10)
-                .attr("y", 110)
-                .attr("dy", ".35em")
-                .style("text-anchor", "end")
-                .text("Low relative population density");
+            .attr("font-size", "10px")
+            .attr("font-family", "arial")
+            .attr("x", width - 10)
+            .attr("y", 110)
+            .attr("dy", ".35em")
+            .style("text-anchor", "end")
+            .text("Low relative population density");
 
+        // append text beneath legend with clarification of what a radius represents
         svg.append("text")
             .attr("font-size", "8px")
             .attr("font-family", "arial")
@@ -295,48 +300,66 @@ window.onload = function() {
             .style("text-anchor", "end")
             .text("*The radii of the circles represent population");
 
-        // change the value depicted on the y axis, along with the scale
+        // change y axis variable, y scale and the y position of circles
         function yChange() {
 
-            var value = this.value // get it
+            var value = this.value // get user generated input
             yScale.domain(d3.extent(data2012, function(d) { return d[value]}))
             yAxis.scale(yScale) // change scale and axis
 
             d3.select('#yAxis') // draw new y axis
-              .transition().duration(1000)
-              .call(yAxis)
+                .transition().duration(1000)
+                .call(yAxis)
 
+            // create empty variable to store new label
+            var newLabel = [];
 
+            // iterate through list of objects with labels
+            for (i = 0; i < selectData.length; i++){
+                if (selectData[i].text == value)
+                    newLabel = selectData[i].label;
+            };
 
             d3.select('#yAxisLabel') // change label
-              .text(value)
+                .transition().duration(1000)
+                .text(newLabel)
 
-            d3.selectAll('circle')
-              .transition().duration(500)
-              .delay(function(d, i) {
-                  return i * 100;
-              })
-              .attr('cy', function(d) {
-                  return yScale(d[value]);
-              });
+            d3.selectAll('circle') // smoothly move the circles in y direction
+                .transition().duration(500)
+                .delay(function(d, i) {
+                    return i * 100;
+                })
+                .attr('cy', function(d) {
+                    return yScale(d[value]);
+                });
 
         };
 
+        // change x axis variable, x scale and the x position of circles
         function xChange() {
 
-            var value = this.value // get the new x value
+            var value = this.value // get user generated input
             xScale.domain(d3.extent(data2012, function(d) { return d[value]}))
+            xAxis.scale(xScale) // change scale and axis
 
-            xAxis.scale(xScale) // change the xScale
-            d3.select('#xAxis') // redraw the xAxis
+            d3.select('#xAxis') // draw new x axis
                 .transition().duration(1000)
                 .call(xAxis)
 
-            d3.select('#xAxisLabel') // change the xAxisLabel
-              .transition().duration(1000)
-              .text(value)
+            // create empty variable to store new label
+            var newLabel = [];
 
-            d3.selectAll('circle') // move the circles
+            // iterate through list of objects with labels
+            for (i = 0; i < selectData.length; i++){
+                if (selectData[i].text == value)
+                    newLabel = selectData[i].label;
+            };
+
+            d3.select('#xAxisLabel') // change label
+              .transition().duration(1000)
+              .text(newLabel);
+
+            d3.selectAll('circle') // smoothly move the circles in x direction
                .transition().duration(500)
                .delay(function (d,i) {
                     return i * 100
@@ -344,15 +367,6 @@ window.onload = function() {
                .attr('cx',function (d) {
                    return xScale(d[value])
                });
-}
-
-        function yLabelChange(){
-
-            var value = this.value
-
-            d3.select('#yAxisLabel') // change label
-              .text(value)
-        }
-
+        };
     };
 };
