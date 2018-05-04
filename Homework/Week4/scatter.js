@@ -6,15 +6,16 @@
 *
 */
 
-// append segment to body containing author and assignment information
-authorInfo = d3.select("body")
-            .append("p").text("Name: Lennert Jansen")
-            .append("p").text("Student number: 10488952")
-            .append("p").text("Course: Data processing, spring 2018")
-            .append("p").append("a").text("Link to source (OECD)").attr("href", "http://stats.oecd.org/BrandedView.aspx?oecd_bv_id=region-data-en&doi=data-00531-en");
 
 // encapsulate entire script in function
 window.onload = function() {
+
+    // append segment to body containing author and assignment information
+    authorInfo = d3.select("body")
+                .append("p").text("Name: Lennert Jansen")
+                .append("p").text("Student number: 10488952")
+                .append("p").text("Course: Data processing, spring 2018")
+                .append("p").append("a").text("Link to source (OECD)").attr("href", "https://stats.oecd.org/BrandedView.aspx?oecd_bv_id=region-data-en&doi=data-00531-en");
 
     // get data using API queries
     var dataAPI2012 = "https://stats.oecd.org/SDMX-JSON/data/CITIES/US106+US107+US114+US012+US122+US124+US125+US128+US134+US135+US014+US146+US190+US196+US202+US209+US210+US242+US245+US250+US259+US003+US033+US045+US048+US055+US069+US084+US103+US115+US117+US133+US141+US147+US149+US154+US155+US159+US160+US161+US170+US174+US178+US180+US181+US186+US195+US205+US212+US213+US223+US227+US233+US234+US237+US241+US251+US252+US261+US035+US038+US039+US044+US060+US065+US070+US077+US081+US089+US097.POP_CORE+POP_DENS_CORE+GDP_PC+LABOUR_PRODUCTIVITY+UNEMP_R/all?startTime=2012&endTime=2012&dimensionAtObservation=allDimensions"
