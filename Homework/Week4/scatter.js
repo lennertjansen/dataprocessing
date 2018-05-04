@@ -6,7 +6,6 @@
 *
 */
 
-
 // encapsulate entire script in function
 window.onload = function() {
 
