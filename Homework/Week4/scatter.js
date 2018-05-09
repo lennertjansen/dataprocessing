@@ -53,7 +53,7 @@ window.onload = function() {
                 };
 
 
-                // push city object to data dictionary
+                // push city object to scatterplot data dictionary
                 data2012.push(cityObject0);
 
             };
@@ -337,7 +337,7 @@ window.onload = function() {
             function xChange() {
 
                 var value = this.value // get user generated input
-                xScale.domain(d3.extent(data2012, function(d) { return d[value]}))
+                xScale.domain(d3.extent(data2012, function(d) { return d[value]})).nice()
                 xAxis.scale(xScale) // change scale and axis
 
                 d3.select('#xAxis') // draw new x axis
