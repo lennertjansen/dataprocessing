@@ -212,6 +212,23 @@ function makePie(dataAPI2){
     pieOuterHeight = 500;
     pieWidth = pieOuterWidth - pieMargin.left - pieMargin.right;
     pieHeight = pieOuterHeight - pieMargin.top - pieMargin.bottom;
+    radius = Math.min(pieWidth, pieHeight) / 2;
+
+    console.log(dataPie[0])
+
+    var cityName = "Boston";
+    var cityData = [];
+
+    for (i = 0; i < dataPie.length; i++){
+        if (dataPie[i].name == cityName)
+            cityData = [
+                {"age_cat" : "Young (0 to 14)", "pop" : dataPie[i].pop_0_14},
+                {"age_cat" : "Working (15 to 64)", "pop" : dataPie[i].pop_15_64},
+                {"age_cat" : "Senior (65 and over)", "pop" : dataPie[i].pop_65_more},
+            ];
+    };
+
+    console.log(cityData);
 
     // apply desired formatting for percentages
     var formatPercent = d3.format('.2%');
@@ -219,21 +236,50 @@ function makePie(dataAPI2){
     // create svg element for scatterplot
     var pieSvg = d3.select("body").append("svg")
         .attr("width", pieOuterWidth)
-        .attr("height", pieOuterHeight)
-        .append("g")
-        .attr("transform", "translate(" + pieOuterWidth + pieMargin.left + ", "
-        + pieMargin.top + ")");
+        .attr("height", pieOuterHeight);
 
-    var color = d3.scaleOrdinal(["#98abc5",
-     "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+    g = pieSvg.append("g").attr('transform', "translate(" + pieWidth / 2 + ", " + pieHeight / 2 +")");
+
+    var color = d3.scaleOrdinal(["#fde0dd", "#fa9fb5", "#c51b8a"]);
 
     var pie = d3.pie()
         .sort(null)
-        .value(function(d) { return d.population; });
+        .value(function(d) {
+            return d.pop;
+        });
 
     var path = d3.arc()
         .outerRadius(radius - 10)
         .innerRadius(0);
+
+    var label = d3.arc()
+        .outerRadius(radius - 40)
+        .innerRadius(radius - 40);
+
+    var arc = g.selectAll(".arc")
+        .data(pie(cityData))
+        .enter()
+        .append("g")
+        .attr("class", "arc");
+
+    arc.append("path")
+        .attr("d", path)
+        .attr("fill", function(d) {
+            return color(d.data.age_cat);
+        });
+
+    arc.append("text")
+        .attr("class", "sliceLabel")
+        .attr("transform", function(d) { return "translate(" + label.centroid(d) + ")"; })
+        .attr("dy", "0.35em")
+        .text(function(d) { return d.data.age_cat; });
+
+    pieSvg.append("text")
+        .attr("class", "pieLabel")
+        .attr("x", pieWidth / 2)
+        .attr("y", (radius * 2.5))
+        .text(cityName)
+
 
 };
 

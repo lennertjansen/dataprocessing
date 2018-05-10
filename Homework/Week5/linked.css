@@ -47,3 +47,9 @@ p  {
   top: 100%;
   left: 0;
 }
+
+.sliceLabel {
+    color: white;
+    font-family: arial;
+    font-size: 10px;
+}
