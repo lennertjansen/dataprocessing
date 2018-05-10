@@ -167,7 +167,7 @@ window.onload = function() {
                         .attr("transform", "translate(" + margin.left + "," +
                         margin.top + ")");
 
-            // dwar x axis
+            // draw x axis
             svg.append("g")
                 .attr('id','xAxis')
                 .attr("class", "x axis")

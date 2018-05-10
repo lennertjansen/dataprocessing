@@ -33,8 +33,6 @@ function makeScatter(error, response){
     // error check
     if (error) throw error;
 
-    makePie(response[1]);
-
     // parse API key for scatterplot into JSON format
     var jsonDataScatter = JSON.parse(response[0].responseText);
 
@@ -65,7 +63,112 @@ function makeScatter(error, response){
 
     };
 
-    console.log(dataScatter);
+    // set dimensions for scatterplot's side of svg canvas
+    var scatterMargin = {
+        top: 30,
+        right: 105,
+        bottom: 50,
+        left: 35
+    };
+    scatterOuterWidth = 525;
+    scatterOuterHeight = 500;
+    scatterWidth = scatterOuterWidth - scatterMargin.left - scatterMargin.right;
+    scatterHeight = scatterOuterHeight - scatterMargin.top - scatterMargin.bottom;
+
+    // apply desired formatting for percentages
+    var formatPercent = d3.format('.2%');
+
+    // create svg element for scatterplot
+    var scatterSvg = d3.select("body").append("svg")
+        .attr("width", scatterOuterWidth)
+        .attr("height", scatterOuterHeight)
+        .append("g")
+        .attr("transform", "translate(" + scatterMargin.left + ", "
+        + scatterMargin.top + ")");
+
+    // specifications of scales for x and y coordinates
+    var xScale = d3.scaleLinear()
+                    .domain(d3.extent(dataScatter, function(d) {return d.gdp_pc})).nice()
+                    .range([0, scatterWidth]);
+
+    var yScale = d3.scaleLinear()
+                    .domain(d3.extent(dataScatter, function(d) {return d.unemp_r})).nice()
+                    .range([scatterHeight, 0]);
+
+    // create scale for radii as a function of population of the city
+    var rScale = d3.scaleLinear()
+                    .domain(d3.extent(dataScatter, function(d) {return d.pop_core})).nice()
+                    .range([5, 20]); // arbitrarily chosen min and max radii
+
+    // initialize axes
+    var xAxis = d3.axisBottom()
+        .scale(xScale);
+    var yAxis = d3.axisLeft()
+        .scale(yScale);
+
+    // draw axes
+    scatterSvg.append("g")
+        .attr('id', 'xAxis')
+        .attr('class', 'x axis')
+        .attr("transform", "translate(0, " + scatterHeight + ")")
+        .call(xAxis);
+    scatterSvg.append("g")
+        .attr('id', 'yAxis')
+        .attr('class', 'y axis')
+        .call(yAxis);
+
+    // write initial labels for x and y axes, respectively
+    scatterSvg.append("text")
+        .attr('id', 'xAxisLabel')
+        .attr('class', "axisLabel")
+        .attr("transform", "translate(0 " + scatterHeight + ")")
+        .attr("x", scatterWidth)
+        .attr("y", -6)
+        .style("text-anchor", "end")
+        .text("GDP per capita (USD 2010)");
+    scatterSvg.append("text")
+        .attr('id', 'yAxisLabel')
+        .attr('class', 'axisLabel')
+        .attr('transform', 'rotate(-90)')
+        .attr('y', 6)
+        .attr('dy', '.71em')
+        .style('text-anchor', 'end')
+        .text('Unemployment rate(%)');
+
+    // create info box for tip containing name, population and density
+    var tip = d3.tip()
+        .attr("class", "d3-tip")
+        .offset([-20, 0]).html(function(d, i) {
+         return "<strong>City:</strong> <span style='color:white'>" + d.name
+          + "</span>" + "<br>" + "Population: " + d.pop_core + "<br>" +
+      "Population density: " + d.pop_dens_core });
+
+    scatterSvg.call(tip);
+
+    // create cricles for every datum in scatterData
+    scatterSvg.selectAll('circle')
+        .data(dataScatter)
+        .enter()
+        .append('circle')
+        .attr('class', 'dot')
+        .attr('r', function(d) {
+            return rScale(d.pop_core);
+        })
+        .attr('cx', function(d) {
+            return xScale(d.gdp_pc);
+        })
+        .attr('cy', function(d) {
+            return yScale(d.unemp_r);
+        })
+        .style("fill", function(d) {
+            return color(dataScatter, d.pop_dens_core);
+        })
+        .style("stroke", "black")
+        .on("mouseover", tip.show) // ensure tip appears and disappears
+        .on("mouseout", tip.hide);
+
+    // call function to create pie chart and give second API key as argument
+    makePie(response[1]);
 
 };
 
@@ -98,6 +201,57 @@ function makePie(dataAPI2){
 
     };
 
-    console.log(dataPie);
+    // set dimensions for scatterplot's side of svg canvas
+    var pieMargin = {
+        top: 30,
+        right: 105,
+        bottom: 50,
+        left: 35
+    };
+    pieOuterWidth = 525;
+    pieOuterHeight = 500;
+    pieWidth = pieOuterWidth - pieMargin.left - pieMargin.right;
+    pieHeight = pieOuterHeight - pieMargin.top - pieMargin.bottom;
+
+    // apply desired formatting for percentages
+    var formatPercent = d3.format('.2%');
+
+    // create svg element for scatterplot
+    var pieSvg = d3.select("body").append("svg")
+        .attr("width", pieOuterWidth)
+        .attr("height", pieOuterHeight)
+        .append("g")
+        .attr("transform", "translate(" + pieOuterWidth + pieMargin.left + ", "
+        + pieMargin.top + ")");
+
+    var color = d3.scaleOrdinal(["#98abc5",
+     "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+
+    var pie = d3.pie()
+        .sort(null)
+        .value(function(d) { return d.population; });
+
+    var path = d3.arc()
+        .outerRadius(radius - 10)
+        .innerRadius(0);
+
+};
+
+// categorise population density into three categories and represent
+// using colorblind friendly sequential coloring
+function color(data, density) {
+
+    maxDens = d3.extent(data, function(d) {return d.pop_dens_core})[1];
+    minDens = d3.extent(data, function(d) {return d.pop_dens_core})[0];
+
+    if (density < (maxDens + minDens) * (1 / 3)){
+        return "#fde0dd"; // low density
+    }
+    else if (density > (maxDens + minDens) * (2 / 3)){
+        return "#c51b8a"; // high density
+    }
+    else {
+        return "#fa9fb5"; // medium density
+    }
 
 };
