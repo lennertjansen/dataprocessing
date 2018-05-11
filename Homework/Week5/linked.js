@@ -63,6 +63,49 @@ function makeScatter(error, response){
 
     };
 
+    // create variable for the DOM element body
+    var body = d3.select('body');
+
+    // create list of objects for the dropdown menus
+    var selectData = [  { "text" : "unemp_r", "label" : "Unemployment rate (%)"},
+                        { "text" : "gdp_pc", "label" : "GDP per capita (USD 2010)"},
+                        { "text" : "pop_core", "label" : "Population (persons)"},
+                        { "text" : "pop_dens_core", "label" : "Poplation density (persons per km2)"},
+                        { "text" : "labour_productivity", "label" : "Labour productivity (Ratio between GDP and total employment)"},
+                    ];
+
+    // create dropdown menu and corresponding span for y axis variables
+    var span = body.append('span')
+        .text('Select y-axis variable: ');
+
+    var yInput = body.append('select')
+        .attr('id','ySelect')
+        .on('change',yChange) // call yCange function on input
+        .selectAll('option')
+        .data(selectData)
+        .enter()
+        .append('option')
+        .attr('value', function (d) { return d.text })
+        .text(function (d) { return d.label ;});
+
+    body.append('br') // break for space between menus
+
+    // create dropdown menu and corresponding span for y axis variables
+    var span = body.append('span')
+                    .text('Select x-Axis variable: ');
+
+    var yInput = body.append('select')
+        .attr('id','xSelect')
+        .on('change',xChange) // call xCange function on input
+        .selectAll('option')
+        .data(selectData)
+        .enter()
+        .append('option')
+        .attr('value', function (d) { return d.text })
+        .text(function (d) { return d.label ;})
+
+    body.append('br') // break for space bottom menu and svg canvas
+
     // set dimensions for scatterplot's side of svg canvas
     var scatterMargin = {
         top: 30,
@@ -170,8 +213,74 @@ function makeScatter(error, response){
             makePie(response[1], d.name);
         });
 
-    // call function to create pie chart and give second API key as argument
-    //makePie(response[1]);
+        // change y axis variable, y scale and the y position of circles
+        function yChange() {
+
+            var value = this.value // get user generated input
+            yScale.domain(d3.extent(dataScatter, function(d) { return d[value]}))
+            yAxis.scale(yScale) // change scale and axis
+
+            d3.select('#yAxis') // draw new y axis
+                .transition().duration(1000)
+                .call(yAxis)
+
+            // create empty variable to store new label
+            var newLabel = [];
+
+            // iterate through list of objects with labels
+            for (i = 0; i < selectData.length; i++){
+                if (selectData[i].text == value)
+                    newLabel = selectData[i].label;
+            };
+
+            d3.select('#yAxisLabel') // change label
+                .transition().duration(1000)
+                .text(newLabel)
+
+            d3.selectAll('circle') // smoothly move the circles in y direction
+                .transition().duration(500)
+                .delay(function(d, i) {
+                    return i * 100;
+                })
+                .attr('cy', function(d) {
+                    return yScale(d[value]);
+                });
+
+        };
+
+        // change x axis variable, x scale and the x position of circles
+        function xChange() {
+
+            var value = this.value // get user generated input
+            xScale.domain(d3.extent(dataScatter, function(d) { return d[value]})).nice()
+            xAxis.scale(xScale) // change scale and axis
+
+            d3.select('#xAxis') // draw new x axis
+                .transition().duration(1000)
+                .call(xAxis)
+
+            // create empty variable to store new label
+            var newLabel = [];
+
+            // iterate through list of objects with labels
+            for (i = 0; i < selectData.length; i++){
+                if (selectData[i].text == value)
+                    newLabel = selectData[i].label;
+            };
+
+            d3.select('#xAxisLabel') // change label
+              .transition().duration(1000)
+              .text(newLabel);
+
+            d3.selectAll('circle') // smoothly move the circles in x direction
+               .transition().duration(500)
+               .delay(function (d,i) {
+                    return i * 100
+                })
+               .attr('cx',function (d) {
+                   return xScale(d[value])
+               });
+        };
 
 };
 
