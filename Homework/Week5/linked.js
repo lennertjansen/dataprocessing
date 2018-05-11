@@ -165,15 +165,20 @@ function makeScatter(error, response){
         })
         .style("stroke", "black")
         .on("mouseover", tip.show) // ensure tip appears and disappears
-        .on("mouseout", tip.hide);
+        .on("mouseout", tip.hide)
+        .on("click", function(d){
+            makePie(response[1], d.name);
+        });
 
     // call function to create pie chart and give second API key as argument
-    makePie(response[1]);
+    //makePie(response[1]);
 
 };
 
 // Hmmmmmmmm, pie
-function makePie(dataAPI2){
+function makePie(dataAPI2, name){
+
+    d3.select('#pieChart').remove();
 
     // parse API key for scatterplot into JSON format
     var jsonDataPie = JSON.parse(dataAPI2.responseText);
@@ -216,7 +221,7 @@ function makePie(dataAPI2){
 
     console.log(dataPie[0])
 
-    var cityName = "Boston";
+    var cityName = name;
     var cityData = [];
 
     for (i = 0; i < dataPie.length; i++){
@@ -235,6 +240,7 @@ function makePie(dataAPI2){
 
     // create svg element for scatterplot
     var pieSvg = d3.select("body").append("svg")
+        .attr('id', 'pieChart')
         .attr("width", pieOuterWidth)
         .attr("height", pieOuterHeight);
 
@@ -250,7 +256,7 @@ function makePie(dataAPI2){
 
     var path = d3.arc()
         .outerRadius(radius - 10)
-        .innerRadius(0);
+        .innerRadius(20);
 
     var label = d3.arc()
         .outerRadius(radius - 40)
@@ -262,11 +268,22 @@ function makePie(dataAPI2){
         .append("g")
         .attr("class", "arc");
 
+    // create info box for tip containing name, population and density
+    var tip = d3.tip()
+        .attr("class", "d3-tip")
+        .offset([-20, 0]).html(function(d, i) {
+         return "<strong>Age Group:</strong> <span style='color:white'>" + d.data.age_cat
+          + "</span>" + "<br>" + "Population: " + d.data.pop});
+
+    pieSvg.call(tip);
+
     arc.append("path")
         .attr("d", path)
         .attr("fill", function(d) {
             return color(d.data.age_cat);
-        });
+        })
+        .on("mouseover", tip.show) // ensure tip appears and disappears
+        .on("mouseout", tip.hide);
 
     arc.append("text")
         .attr("class", "sliceLabel")
