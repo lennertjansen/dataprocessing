@@ -38,6 +38,7 @@ function makeScatter(error, response){
 
     // create empty object for scatterplot data
     dataScatter = [];
+    cityNamesList = [];
 
     // organise the scattered JSON objects
     for (let i = 0; i < 70; i++){
@@ -60,6 +61,8 @@ function makeScatter(error, response){
 
     // push city object to data dictionary
     dataScatter.push(cityObjectScatter);
+
+    cityNamesList.push(jsonDataScatter.structure.dimensions.observation[0].values[i]["name"]);
 
     };
 
@@ -111,9 +114,9 @@ function makeScatter(error, response){
         top: 30,
         right: 105,
         bottom: 50,
-        left: 35
+        left: 70
     };
-    scatterOuterWidth = 525;
+    scatterOuterWidth = 725;
     scatterOuterHeight = 500;
     scatterWidth = scatterOuterWidth - scatterMargin.left - scatterMargin.right;
     scatterHeight = scatterOuterHeight - scatterMargin.top - scatterMargin.bottom;
@@ -213,6 +216,8 @@ function makeScatter(error, response){
             makePie(response[1], d.name);
         });
 
+    makePie(response[1], "New York");
+
         // change y axis variable, y scale and the y position of circles
         function yChange() {
 
@@ -282,7 +287,18 @@ function makeScatter(error, response){
                });
         };
 
+    $(document).ready(function(){
+        $("#myInput").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+            for (i = 0; i < cityNamesList.length; i++){
+                if (value == cityNamesList[i].toLowerCase()){
+                    makePie(response[1], cityNamesList[i]);
+                };
+            };
+      });
+    });
 };
+
 
 // Hmmmmmmmm, pie
 function makePie(dataAPI2, name){
@@ -322,13 +338,11 @@ function makePie(dataAPI2, name){
         bottom: 50,
         left: 35
     };
-    pieOuterWidth = 525;
+    pieOuterWidth = 425;
     pieOuterHeight = 500;
     pieWidth = pieOuterWidth - pieMargin.left - pieMargin.right;
     pieHeight = pieOuterHeight - pieMargin.top - pieMargin.bottom;
     radius = Math.min(pieWidth, pieHeight) / 2;
-
-    console.log(dataPie[0])
 
     var cityName = name;
     var cityData = [];
@@ -342,8 +356,6 @@ function makePie(dataAPI2, name){
             ];
     };
 
-    console.log(cityData);
-
     // apply desired formatting for percentages
     var formatPercent = d3.format('.2%');
 
@@ -355,7 +367,7 @@ function makePie(dataAPI2, name){
 
     g = pieSvg.append("g").attr('transform', "translate(" + pieWidth / 2 + ", " + pieHeight / 2 +")");
 
-    var color = d3.scaleOrdinal(["#fde0dd", "#fa9fb5", "#c51b8a"]);
+    var color = d3.scaleOrdinal(["#1b9e77", "#d95f02", "#7570b3"]);
 
     var pie = d3.pie()
         .sort(null)
@@ -406,9 +418,11 @@ function makePie(dataAPI2, name){
         .attr("y", (radius * 2.5))
         .text(cityName)
 
-
 };
 
+// function searchCity(data, name){
+//
+// }
 // categorise population density into three categories and represent
 // using colorblind friendly sequential coloring
 function color(data, density) {
