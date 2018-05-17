@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="linked.css">
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="/libraries/d3.js"></script> <!--D3 version 4.13.0 -->
+        <script type="text/javascript" src="/libraries/tip.js"></script>
+        <script type="text/javascript" src="linked.js"></script>
+        <title>
+            Linked Views
+        </title>
+    </head>
+    <body>
+        <div class="jumbotron text-center">
+            <h1>Linked Visualisations</h1>
+            <p>by Lennert Jansen</p>
+        </div>
+
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-4">
+              <h3>The story</h3>
+              <p>Both my visualisations depict graphical representations of demographic data, all of which was gathered from the OECD database. Being an econometrician with an interest in geography, I have always found joy in analysing as well as visualising societal data.</p>
+              <p>The main theme is demographic indicators of urban areas in the United States of America. The scatterplot on the left side of your screen is an interactive chart with two customisable axes. Every circle represents one of 70 urban areas in the USA. You, the user, can select from various economic indicators. Namely, population, population density, unemployment rate, labour productivity and GDP per capita. Furthermore, population size is also represented by the radii of the circles. And finally, I have chosen to depict increasing levels of population density by means of darker shades of pink (I like pink).</p>
+            </div>
+            <div class="col-sm-4">
+                <h3>Behind</h3>
+                <p>On the right panel of your screen, you’ll find an appetising pie chart. This delicious graphic tells us something about the distribution of age categories in a selected urban area. A city’s pie chart can be accessed by clicking on a circle, or by searching for an urban area’s name in the search bar below. </p>
+            </div>
+            <div class="col-sm-4">
+                <h3>The Data</h3>
+                <p>With these charts I aimed to graphically uncover demographic patterns (e.g., do cities with high population densities tend to have higher GDP’s per capita?). Whereas the pie chart gives us a slightly more detailed look into the constitution of our city of interest (e.g., do cities with higher labour productivity have a greater percentage of working age population?). The pie charts, however,  all look very similar, as one might expect when keeping in mind we’re talking about urban areas in the same country (i.e., similar demographic make up).</p>
+            </div>
+          </div>
+        </div>
+        <input class="form-control" id="myInput" type="text" placeholder="Search for your city of interest...">
+    </body>
+</html>

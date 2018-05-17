@@ -4,10 +4,15 @@ h1 {
     font-size: 40px;
 }
 
+.deze {
+    margin-left: auto;
+    margin-right: auto
+}
+
 p  {
-    color: lightpink;
+    color: grey;
     font-family: courier;
-    font-size: 20px;
+    font-size: 10px;
 }
 
 .axisLabel {
@@ -17,6 +22,12 @@ p  {
 
 .dot {
   fill-opacity: .5;
+}
+
+.chartTitle {
+    color: grey;
+    font-family: arial;
+    font-size: 16px;
 }
 
 .d3-tip {

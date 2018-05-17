@@ -83,7 +83,7 @@ function makeScatter(error, response){
 
     var yInput = body.append('select')
         .attr('id','ySelect')
-        .on('change',yChange) // call yCange function on input
+        .on('change',yChange)
         .selectAll('option')
         .data(selectData)
         .enter()
@@ -91,7 +91,8 @@ function makeScatter(error, response){
         .attr('value', function (d) { return d.text })
         .text(function (d) { return d.label ;});
 
-    body.append('br') // break for space between menus
+    // break for space between menus
+    body.append('br')
 
     // create dropdown menu and corresponding span for y axis variables
     var span = body.append('span')
@@ -216,6 +217,13 @@ function makeScatter(error, response){
             makePie(response[1], d.name);
         });
 
+    scatterSvg.append("text")
+        .attr('class', 'chartTitle')
+        .attr("x", (scatterWidth / 2))
+        .attr("y", 0 - (scatterMargin.top / 4))
+        .attr("text-anchor", "middle")
+        .text("Scatterplot of US urban areas");
+
     makePie(response[1], "New York");
 
         // change y axis variable, y scale and the y position of circles
@@ -297,6 +305,73 @@ function makeScatter(error, response){
             };
       });
     });
+
+    // create color density object for legend
+    var colorDensity = {
+        low: "#fde0dd",
+        med: "#fa9fb5",
+        high: "#c51b8a"
+    };
+    legendIndex = [1, 2, 3];
+
+    // create legend in upper right corner as three colored squares
+    scatterSvg.selectAll("legend")
+        .data(legendIndex)
+        .enter()
+        .append("rect")
+        .attr("class", "legend")
+        .attr("y", function(d, i){
+            return scatterHeight - scatterHeight + 100 - (i * 30);
+        })
+        .attr("x", scatterWidth)
+        .attr("width", 20)
+        .attr("height", 20)
+        .style("fill", function(d, i){
+            if (scatterHeight - scatterHeight + 100 - (i * 30) == 100 )
+                {return "#fde0dd"}
+            else if (scatterHeight - scatterHeight + 100 - (i * 30) == 70)
+                {return "#fa9fb5"}
+            else {return "#c51b8a"}
+        });
+
+    // append descriptions of what a color represents in the plot
+    scatterSvg.append("text")
+        .attr("font-size", "10px")
+        .attr("font-family", "arial")
+        .attr("x", scatterWidth - 10)
+        .attr("y", 50)
+        .attr("dy", ".35em")
+        .style("text-anchor", "end")
+        .text("High relative population density");
+
+    scatterSvg.append("text")
+        .attr("font-size", "10px")
+        .attr("font-family", "arial")
+        .attr("x", scatterWidth - 10)
+        .attr("y", 80)
+        .attr("dy", ".35em")
+        .style("text-anchor", "end")
+        .text("Medium relative population density");
+
+    scatterSvg.append("text")
+        .attr("font-size", "10px")
+        .attr("font-family", "arial")
+        .attr("x", scatterWidth - 10)
+        .attr("y", 110)
+        .attr("dy", ".35em")
+        .style("text-anchor", "end")
+        .text("Low relative population density");
+
+    // append text beneath legend with clarification of what a radius represents
+    scatterSvg.append("text")
+        .attr("font-size", "8px")
+        .attr("font-family", "arial")
+        .attr("x", scatterWidth)
+        .attr("y", 140)
+        .attr("dy", ".35em")
+        .style("text-anchor", "end")
+        .text("*The radii of the circles represent population");
+
 };
 
 
@@ -406,17 +481,25 @@ function makePie(dataAPI2, name){
         .on("mouseover", tip.show) // ensure tip appears and disappears
         .on("mouseout", tip.hide);
 
+    // calculates total population of city for percentages as slice labels
+    var totalPopulation = 0
+    for(i = 0; i < cityData.length; i++){
+        totalPopulation += cityData[i].pop;
+    };
+
     arc.append("text")
-        .attr("class", "sliceLabel")
+        .attr('class', 'sliceLabel')
         .attr("transform", function(d) { return "translate(" + label.centroid(d) + ")"; })
         .attr("dy", "0.35em")
-        .text(function(d) { return d.data.age_cat; });
+        .text(function(d) { return Math.round(((d.data.pop / totalPopulation) * 100)) + "%"; });
 
     pieSvg.append("text")
-        .attr("class", "pieLabel")
-        .attr("x", pieWidth / 2)
-        .attr("y", (radius * 2.5))
-        .text(cityName)
+        .attr('class', 'chartTitle')
+        .attr("x", (pieWidth / 2))
+        .attr("y", pieMargin.top)
+        .attr("text-anchor", "middle")
+        .text("Pie Chart of " + cityName);
+
 
 };
 
