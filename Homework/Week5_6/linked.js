@@ -1,7 +1,7 @@
 /*
 * Name: Lennert Jansen
 * Student number: 10488952
-* Date: 8 May 2018
+* Date: 18 May 2018
 * Linked Views: combining two interactive data visualisations
 *
 */
@@ -13,12 +13,11 @@ window.onload = function() {
                 .append("p").text("Name: Lennert Jansen")
                 .append("p").text("Student number: 10488952")
                 .append("p").text("Course: Data processing, spring 2018")
-                //.append("p").append("a").text("Link to source (OECD)").attr("href", "https://stats.oecd.org/BrandedView.aspx?oecd_bv_id=region-data-en&doi=data-00531-en");
 
     // get data using API queries
-    var dataAPI1 = "https://stats.oecd.org/SDMX-JSON/data/CITIES/US106+US107+US114+US012+US122+US124+US125+US128+US134+US135+US014+US146+US190+US196+US202+US209+US210+US242+US245+US250+US259+US003+US033+US045+US048+US055+US069+US084+US103+US115+US117+US133+US141+US147+US149+US154+US155+US159+US160+US161+US170+US174+US178+US180+US181+US186+US195+US205+US212+US213+US223+US227+US233+US234+US237+US241+US251+US252+US261+US035+US038+US039+US044+US060+US065+US070+US077+US081+US089+US097.POP_CORE+POP_DENS_CORE+GDP_PC+LABOUR_PRODUCTIVITY+UNEMP_R/all?startTime=2012&endTime=2012&dimensionAtObservation=allDimensions" // contains data concerning GDP, population density and unemployment for 70 US cities
+    var dataAPI1 = "https://stats.oecd.org/SDMX-JSON/data/CITIES/US106+US107+US114+US012+US122+US124+US125+US128+US134+US135+US014+US146+US190+US196+US202+US209+US210+US242+US245+US250+US259+US003+US033+US045+US048+US055+US069+US084+US103+US115+US117+US133+US141+US147+US149+US154+US155+US159+US160+US161+US170+US174+US178+US180+US181+US186+US195+US205+US212+US213+US223+US227+US233+US234+US237+US241+US251+US252+US261+US035+US038+US039+US044+US060+US065+US070+US077+US081+US089+US097.POP_CORE+POP_DENS_CORE+GDP_PC+LABOUR_PRODUCTIVITY+UNEMP_R/all?startTime=2012&endTime=2012&dimensionAtObservation=allDimensions"
 
-    var dataAPI2 = "https://stats.oecd.org/SDMX-JSON/data/CITIES/US106+US107+US114+US012+US122+US124+US125+US128+US134+US135+US014+US146+US190+US196+US202+US209+US210+US242+US245+US250+US259+US003+US033+US045+US048+US055+US069+US084+US103+US115+US117+US133+US141+US147+US149+US154+US155+US159+US160+US161+US170+US174+US178+US180+US181+US186+US195+US205+US212+US213+US223+US227+US233+US234+US237+US241+US251+US252+US261+US035+US038+US039+US044+US060+US065+US070+US077+US081+US089+US097.POP_0_14+POP_15_64+POP_65MORE/all?startTime=2012&endTime=2012&dimensionAtObservation=allDimensions" // contains data concerning the population by age group for 70 US cities
+    var dataAPI2 = "https://stats.oecd.org/SDMX-JSON/data/CITIES/US106+US107+US114+US012+US122+US124+US125+US128+US134+US135+US014+US146+US190+US196+US202+US209+US210+US242+US245+US250+US259+US003+US033+US045+US048+US055+US069+US084+US103+US115+US117+US133+US141+US147+US149+US154+US155+US159+US160+US161+US170+US174+US178+US180+US181+US186+US195+US205+US212+US213+US223+US227+US233+US234+US237+US241+US251+US252+US261+US035+US038+US039+US044+US060+US065+US070+US077+US081+US089+US097.POP_0_14+POP_15_64+POP_65MORE/all?startTime=2012&endTime=2012&dimensionAtObservation=allDimensions"
 
     d3.queue()
         .defer(d3.request, dataAPI1)
@@ -36,18 +35,18 @@ function makeScatter(error, response){
     // parse API key for scatterplot into JSON format
     var jsonDataScatter = JSON.parse(response[0].responseText);
 
-    // create empty object for scatterplot data
+    // create empty object for scatterplot data and list for the search bar
     dataScatter = [];
     cityNamesList = [];
 
     // organise the scattered JSON objects
     for (let i = 0; i < 70; i++){
 
-        index0 = i + ":" + "0:0"; // index for gdp per capita
-        index1 = i + ":" + "1:0"; // index for unemployment rate
-        index2 = i + ":" + "2:0"; // index for population
-        index3 = i + ":" + "3:0"; // index for population density
-        index4 = i + ":" + "4:0"; // index for labour productivity
+        index0 = i + ":" + "0:0";
+        index1 = i + ":" + "1:0";
+        index2 = i + ":" + "2:0";
+        index3 = i + ":" + "3:0";
+        index4 = i + ":" + "4:0";
 
         // create object in which a single city's info will be stored
         cityObjectScatter = {
@@ -62,6 +61,7 @@ function makeScatter(error, response){
     // push city object to data dictionary
     dataScatter.push(cityObjectScatter);
 
+    // create a list containing all the names of the cities for the search bar
     cityNamesList.push(jsonDataScatter.structure.dimensions.observation[0].values[i]["name"]);
 
     };
@@ -108,7 +108,7 @@ function makeScatter(error, response){
         .attr('value', function (d) { return d.text })
         .text(function (d) { return d.label ;})
 
-    body.append('br') // break for space bottom menu and svg canvas
+    body.append('br')
 
     // set dimensions for scatterplot's side of svg canvas
     var scatterMargin = {
@@ -135,17 +135,17 @@ function makeScatter(error, response){
 
     // specifications of scales for x and y coordinates
     var xScale = d3.scaleLinear()
-                    .domain(d3.extent(dataScatter, function(d) {return d.gdp_pc})).nice()
-                    .range([0, scatterWidth]);
+        .domain(d3.extent(dataScatter, function(d) {return d.gdp_pc})).nice()
+        .range([0, scatterWidth]);
 
     var yScale = d3.scaleLinear()
-                    .domain(d3.extent(dataScatter, function(d) {return d.unemp_r})).nice()
-                    .range([scatterHeight, 0]);
+        .domain(d3.extent(dataScatter, function(d) {return d.unemp_r})).nice()
+        .range([scatterHeight, 0]);
 
     // create scale for radii as a function of population of the city
     var rScale = d3.scaleLinear()
-                    .domain(d3.extent(dataScatter, function(d) {return d.pop_core})).nice()
-                    .range([5, 20]); // arbitrarily chosen min and max radii
+        .domain(d3.extent(dataScatter, function(d) {return d.pop_core})).nice()
+        .range([5, 20]); // arbitrarily chosen min and max radii
 
     // initialize axes
     var xAxis = d3.axisBottom()
@@ -186,9 +186,10 @@ function makeScatter(error, response){
     var tip = d3.tip()
         .attr("class", "d3-tip")
         .offset([-20, 0]).html(function(d, i) {
-         return "<strong>City:</strong> <span style='color:white'>" + d.name
-          + "</span>" + "<br>" + "Population: " + d.pop_core + "<br>" +
-      "Population density: " + d.pop_dens_core });
+            return "<strong>City:</strong> <span style='color:white'>" + d.name
+            + "</span>" + "<br>" + "Population: " + d.pop_core + "<br>" +
+            "Population density: " + d.pop_dens_core
+        });
 
     scatterSvg.call(tip);
 
@@ -224,83 +225,94 @@ function makeScatter(error, response){
         .attr("text-anchor", "middle")
         .text("Scatterplot of US urban areas");
 
+    // ensure a pie chart of New York is visible upon first viewing of page
     makePie(response[1], "New York");
 
-        // change y axis variable, y scale and the y position of circles
-        function yChange() {
+    // change y axis variable, y scale and the y position of circles
+    function yChange() {
 
-            var value = this.value // get user generated input
-            yScale.domain(d3.extent(dataScatter, function(d) { return d[value]}))
-            yAxis.scale(yScale) // change scale and axis
+        // get user generated input and change scale and axis
+        var value = this.value
+        yScale.domain(d3.extent(dataScatter, function(d) { return d[value]}))
+        yAxis.scale(yScale)
 
-            d3.select('#yAxis') // draw new y axis
-                .transition().duration(1000)
-                .call(yAxis)
+        // draw new y axis
+        d3.select('#yAxis')
+            .transition().duration(1000)
+            .call(yAxis)
 
-            // create empty variable to store new label
-            var newLabel = [];
+        // create empty variable to store new label
+        var newLabel = [];
 
-            // iterate through list of objects with labels
-            for (i = 0; i < selectData.length; i++){
-                if (selectData[i].text == value)
-                    newLabel = selectData[i].label;
-            };
-
-            d3.select('#yAxisLabel') // change label
-                .transition().duration(1000)
-                .text(newLabel)
-
-            d3.selectAll('circle') // smoothly move the circles in y direction
-                .transition().duration(500)
-                .delay(function(d, i) {
-                    return i * 100;
-                })
-                .attr('cy', function(d) {
-                    return yScale(d[value]);
-                });
-
+        // iterate through list of objects with labels
+        for (i = 0; i < selectData.length; i++){
+            if (selectData[i].text == value)
+                newLabel = selectData[i].label;
         };
 
-        // change x axis variable, x scale and the x position of circles
-        function xChange() {
+        // change label
+        d3.select('#yAxisLabel')
+            .transition().duration(1000)
+            .text(newLabel)
 
-            var value = this.value // get user generated input
-            xScale.domain(d3.extent(dataScatter, function(d) { return d[value]})).nice()
-            xAxis.scale(xScale) // change scale and axis
+        // smoothly move the circles in y direction
+        d3.selectAll('circle')
+            .transition().duration(500)
+            .delay(function(d, i) {
+                return i * 100;
+            })
+            .attr('cy', function(d) {
+                return yScale(d[value]);
+            });
 
-            d3.select('#xAxis') // draw new x axis
-                .transition().duration(1000)
-                .call(xAxis)
+    };
 
-            // create empty variable to store new label
-            var newLabel = [];
+    // change x axis variable, x scale and the x position of circles
+    function xChange() {
 
-            // iterate through list of objects with labels
-            for (i = 0; i < selectData.length; i++){
-                if (selectData[i].text == value)
-                    newLabel = selectData[i].label;
-            };
+        // get user generated input and change scale and axis
+        var value = this.value
+        xScale.domain(d3.extent(dataScatter, function(d) { return d[value]})).nice()
+        xAxis.scale(xScale)
 
-            d3.select('#xAxisLabel') // change label
-              .transition().duration(1000)
-              .text(newLabel);
+        // draw new x axis
+        d3.select('#xAxis')
+            .transition().duration(1000)
+            .call(xAxis)
 
-            d3.selectAll('circle') // smoothly move the circles in x direction
-               .transition().duration(500)
-               .delay(function (d,i) {
-                    return i * 100
-                })
-               .attr('cx',function (d) {
-                   return xScale(d[value])
-               });
+        // create empty variable to store new label
+        var newLabel = [];
+
+        // iterate through list of objects with labels
+        for (i = 0; i < selectData.length; i++){
+            if (selectData[i].text == value)
+                newLabel = selectData[i].label;
         };
 
+        // change label
+        d3.select('#xAxisLabel')
+          .transition().duration(1000)
+          .text(newLabel);
+
+        // smoothly move the circles in x direction
+        d3.selectAll('circle')
+           .transition().duration(500)
+           .delay(function (d,i) {
+                return i * 100
+            })
+           .attr('cx',function (d) {
+               return xScale(d[value])
+           });
+    };
+
+    // use Bootstrap (jQuery) to implement filter bar
     $(document).ready(function(){
         $("#myInput").on("keyup", function() {
             var value = $(this).val().toLowerCase();
             for (i = 0; i < cityNamesList.length; i++){
                 if (value == cityNamesList[i].toLowerCase()){
                     makePie(response[1], cityNamesList[i]);
+                    break;
                 };
             };
       });
@@ -389,9 +401,9 @@ function makePie(dataAPI2, name){
     // organise the JSON objects
     for (let i = 0; i < 70; i++){
 
-        index0 = i + ":" + "0:0"; // population, Total, Old (65more)
-        index1 = i + ":" + "1:0"; // population, Total, Youth (0-14)
-        index2 = i + ":" + "2:0"; // population, Total, Working age (15-64)
+        index0 = i + ":" + "0:0";
+        index1 = i + ":" + "1:0";
+        index2 = i + ":" + "2:0";
 
         // create object in which a single city's info will be stored
         cityObjectPie = {
@@ -434,26 +446,31 @@ function makePie(dataAPI2, name){
     // apply desired formatting for percentages
     var formatPercent = d3.format('.2%');
 
-    // create svg element for scatterplot
+    // create svg element for pie chart
     var pieSvg = d3.select("body").append("svg")
         .attr('id', 'pieChart')
         .attr("width", pieOuterWidth)
         .attr("height", pieOuterHeight);
 
+    // append g element to center of pie chart svg canvas
     g = pieSvg.append("g").attr('transform', "translate(" + pieWidth / 2 + ", " + pieHeight / 2 +")");
 
+    // set qualitative colour scheme for pie chart
     var color = d3.scaleOrdinal(["#1b9e77", "#d95f02", "#7570b3"]);
 
+    // create pie chart variable using d3's built in function
     var pie = d3.pie()
         .sort(null)
         .value(function(d) {
             return d.pop;
         });
 
+    // set sizes of outer and inner radii, respectively
     var path = d3.arc()
         .outerRadius(radius - 10)
         .innerRadius(20);
 
+    // create label variables for the arcs
     var label = d3.arc()
         .outerRadius(radius - 40)
         .innerRadius(radius - 40);
@@ -464,7 +481,7 @@ function makePie(dataAPI2, name){
         .append("g")
         .attr("class", "arc");
 
-    // create info box for tip containing name, population and density
+    // create info box for tip containing age category and population size
     var tip = d3.tip()
         .attr("class", "d3-tip")
         .offset([-20, 0]).html(function(d, i) {
@@ -487,12 +504,14 @@ function makePie(dataAPI2, name){
         totalPopulation += cityData[i].pop;
     };
 
+    // append labels
     arc.append("text")
         .attr('class', 'sliceLabel')
         .attr("transform", function(d) { return "translate(" + label.centroid(d) + ")"; })
         .attr("dy", "0.35em")
         .text(function(d) { return Math.round(((d.data.pop / totalPopulation) * 100)) + "%"; });
 
+    // append chart title
     pieSvg.append("text")
         .attr('class', 'chartTitle')
         .attr("x", (pieWidth / 2))
@@ -503,9 +522,6 @@ function makePie(dataAPI2, name){
 
 };
 
-// function searchCity(data, name){
-//
-// }
 // categorise population density into three categories and represent
 // using colorblind friendly sequential coloring
 function color(data, density) {
